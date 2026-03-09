@@ -143,6 +143,18 @@ export const supportRequestFields: INodeProperties[] = [
 		},
 	},
 	{
+		displayName: 'Root Cause Asset',
+		name: 'root_cause_asset',
+		type: 'string',
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['supportRequest'],
+				operation: ["edit"],
+			},
+		},
+	},
+	{
 		displayName: 'Status ID',
 		name: 'status_id',
 		type: 'string',

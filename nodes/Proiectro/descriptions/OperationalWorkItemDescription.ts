@@ -159,6 +159,18 @@ export const operationalWorkItemFields: INodeProperties[] = [
 		},
 	},
 	{
+		displayName: 'Customer Asset',
+		name: 'customer_asset',
+		type: 'string',
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['operationalWorkItem'],
+				operation: ["create", "update"],
+			},
+		},
+	},
+	{
 		displayName: 'Priority',
 		name: 'priority',
 		type: 'options',

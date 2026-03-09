@@ -11,6 +11,10 @@ import type {
 import { NodeOperationError } from 'n8n-workflow';
 
 import {
+	assetCategoryFields,
+	assetCategoryOperations,
+} from './descriptions/AssetCategoryDescription';
+import {
 	contactFields,
 	contactOperations,
 } from './descriptions/ContactDescription';
@@ -19,9 +23,21 @@ import {
 	customerOperations,
 } from './descriptions/CustomerDescription';
 import {
+	customerAssetFields,
+	customerAssetOperations,
+} from './descriptions/CustomerAssetDescription';
+import {
+	customerLocationFields,
+	customerLocationOperations,
+} from './descriptions/CustomerLocationDescription';
+import {
 	labelFields,
 	labelOperations,
 } from './descriptions/LabelDescription';
+import {
+	locationFields,
+	locationOperations,
+} from './descriptions/LocationDescription';
 import {
 	operationalWorkItemFields,
 	operationalWorkItemOperations,
@@ -97,6 +113,11 @@ export class Proiectro implements INodeType {
 				noDataExpression: true,
 				options: [
 					{
+						name: 'Asset Category',
+						value: 'assetCategory',
+						description: 'Manage asset categories',
+					},
+					{
 						name: 'Contact',
 						value: 'contact',
 						description: 'Manage contacts within organizations',
@@ -107,9 +128,24 @@ export class Proiectro implements INodeType {
 						description: 'Manage customers (organizations)',
 					},
 					{
+						name: 'Customer Asset',
+						value: 'customerAsset',
+						description: 'Manage customer assets (equipment, devices, etc.)',
+					},
+					{
+						name: 'Customer Location',
+						value: 'customerLocation',
+						description: 'Manage customer locations (link customers to locations)',
+					},
+					{
 						name: 'Label',
 						value: 'label',
 						description: 'Manage labels (key-value pairs) and attach them to entities',
+					},
+					{
+						name: 'Location',
+						value: 'location',
+						description: 'Manage workspace locations',
 					},
 					{
 						name: 'Operational Work Item',
@@ -167,14 +203,22 @@ export class Proiectro implements INodeType {
 						description: 'Manage project work items (tasks/deliverables)',
 					},
 				],
-				default: 'contact',
+				default: 'assetCategory',
 			},
+			...assetCategoryOperations,
+			...assetCategoryFields,
 			...contactOperations,
 			...contactFields,
 			...customerOperations,
 			...customerFields,
+			...customerAssetOperations,
+			...customerAssetFields,
+			...customerLocationOperations,
+			...customerLocationFields,
 			...labelOperations,
 			...labelFields,
+			...locationOperations,
+			...locationFields,
 			...operationalWorkItemOperations,
 			...operationalWorkItemFields,
 			...paymentOperations,
@@ -346,6 +390,24 @@ export class Proiectro implements INodeType {
 					value: item.id as string,
 				}));
 			},
+			async getAssetCategories(
+				this: ILoadOptionsFunctions,
+			): Promise<INodePropertyOptions[]> {
+				const credentials = await this.getCredentials('proiectroApi');
+				const response = (await this.helpers.httpRequestWithAuthentication.call(
+					this,
+					'proiectroApi',
+					{
+						method: 'GET',
+						url: `${credentials.baseUrl}/api/v1/${credentials.workspacePath}/list_asset_categories`,
+						json: true,
+					},
+				)) as { asset_categories: Array<Record<string, unknown>> };
+				return (response.asset_categories ?? []).map((item) => ({
+					name: (item.name as string),
+					value: item.id as string,
+				}));
+			},
 		},
 	};
 
@@ -398,6 +460,8 @@ export class Proiectro implements INodeType {
 					if (description !== undefined && description !== '') body['description'] = description;
 					const customer = this.getNodeParameter('customer', i, undefined);
 					if (customer !== undefined && customer !== '') body['customer'] = customer;
+					const customer_asset = this.getNodeParameter('customer_asset', i, undefined);
+					if (customer_asset !== undefined && customer_asset !== '') body['customer_asset'] = customer_asset;
 					const priority = this.getNodeParameter('priority', i, undefined);
 					if (priority !== undefined && priority !== '') body['priority'] = priority;
 					const due_date = this.getNodeParameter('due_date', i, undefined);
@@ -422,6 +486,8 @@ export class Proiectro implements INodeType {
 					if (description !== undefined && description !== '') body['description'] = description;
 					const customer = this.getNodeParameter('customer', i, undefined);
 					if (customer !== undefined && customer !== '') body['customer'] = customer;
+					const customer_asset = this.getNodeParameter('customer_asset', i, undefined);
+					if (customer_asset !== undefined && customer_asset !== '') body['customer_asset'] = customer_asset;
 					const priority = this.getNodeParameter('priority', i, undefined);
 					if (priority !== undefined && priority !== '') body['priority'] = priority;
 					const due_date = this.getNodeParameter('due_date', i, undefined);
@@ -1210,6 +1276,8 @@ export class Proiectro implements INodeType {
 					if (request_type !== undefined && request_type !== '') body['request_type'] = request_type;
 					const request_severity = this.getNodeParameter('request_severity', i);
 					if (request_severity !== undefined && request_severity !== '') body['request_severity'] = request_severity;
+					const root_cause_asset = this.getNodeParameter('root_cause_asset', i, undefined);
+					if (root_cause_asset !== undefined && root_cause_asset !== '') body['root_cause_asset'] = root_cause_asset;
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -2111,6 +2179,324 @@ export class Proiectro implements INodeType {
 						{
 							method: 'DELETE',
 							url: `${apiBase}/delete_webhook/${webhook_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'location' && operation === 'list') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/locations`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'location' && operation === 'create') {
+					const body: IDataObject = {};
+					const name = this.getNodeParameter('name', i);
+					if (name !== undefined && name !== '') body['name'] = name;
+					const description = this.getNodeParameter('description', i, undefined);
+					if (description !== undefined && description !== '') body['description'] = description;
+					const internal_code = this.getNodeParameter('internal_code', i, undefined);
+					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
+					const country = this.getNodeParameter('country', i, undefined);
+					if (country !== undefined && country !== '') body['country'] = country;
+					const parent = this.getNodeParameter('parent', i, undefined);
+					if (parent !== undefined && parent !== '') body['parent'] = parent;
+					const is_active = this.getNodeParameter('is_active', i, undefined);
+					if (is_active !== undefined && is_active !== '') body['is_active'] = is_active;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/add_location`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'location' && operation === 'update') {
+					const location_id = this.getNodeParameter('location_id', i) as string;
+					const body: IDataObject = {};
+					const name = this.getNodeParameter('name', i);
+					if (name !== undefined && name !== '') body['name'] = name;
+					const description = this.getNodeParameter('description', i, undefined);
+					if (description !== undefined && description !== '') body['description'] = description;
+					const internal_code = this.getNodeParameter('internal_code', i, undefined);
+					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
+					const country = this.getNodeParameter('country', i, undefined);
+					if (country !== undefined && country !== '') body['country'] = country;
+					const parent = this.getNodeParameter('parent', i, undefined);
+					if (parent !== undefined && parent !== '') body['parent'] = parent;
+					const is_active = this.getNodeParameter('is_active', i, undefined);
+					if (is_active !== undefined && is_active !== '') body['is_active'] = is_active;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PATCH',
+							url: `${apiBase}/edit_location/${location_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'location' && operation === 'delete') {
+					const location_id = this.getNodeParameter('location_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'DELETE',
+							url: `${apiBase}/delete_location/${location_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'customerLocation' && operation === 'list') {
+					const org_id = this.getNodeParameter('org_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/list_customer_locations/${org_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'customerLocation' && operation === 'create') {
+					const body: IDataObject = {};
+					const customer = this.getNodeParameter('customer', i);
+					if (customer !== undefined && customer !== '') body['customer'] = customer;
+					const location = this.getNodeParameter('location', i);
+					if (location !== undefined && location !== '') body['location'] = location;
+					const name = this.getNodeParameter('name', i);
+					if (name !== undefined && name !== '') body['name'] = name;
+					const description = this.getNodeParameter('description', i, undefined);
+					if (description !== undefined && description !== '') body['description'] = description;
+					const internal_code = this.getNodeParameter('internal_code', i, undefined);
+					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
+					const is_active = this.getNodeParameter('is_active', i, undefined);
+					if (is_active !== undefined && is_active !== '') body['is_active'] = is_active;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/add_customer_location`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'customerLocation' && operation === 'update') {
+					const customer_location_id = this.getNodeParameter('customer_location_id', i) as string;
+					const body: IDataObject = {};
+					const location = this.getNodeParameter('location', i);
+					if (location !== undefined && location !== '') body['location'] = location;
+					const name = this.getNodeParameter('name', i);
+					if (name !== undefined && name !== '') body['name'] = name;
+					const description = this.getNodeParameter('description', i, undefined);
+					if (description !== undefined && description !== '') body['description'] = description;
+					const internal_code = this.getNodeParameter('internal_code', i, undefined);
+					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
+					const is_active = this.getNodeParameter('is_active', i, undefined);
+					if (is_active !== undefined && is_active !== '') body['is_active'] = is_active;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PATCH',
+							url: `${apiBase}/edit_customer_location/${customer_location_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'customerLocation' && operation === 'delete') {
+					const customer_location_id = this.getNodeParameter('customer_location_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'DELETE',
+							url: `${apiBase}/delete_customer_location/${customer_location_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'customerAsset' && operation === 'list') {
+					const org_id = this.getNodeParameter('org_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/list_customer_assets/${org_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'customerAsset' && operation === 'create') {
+					const body: IDataObject = {};
+					const customer = this.getNodeParameter('customer', i);
+					if (customer !== undefined && customer !== '') body['customer'] = customer;
+					const category = this.getNodeParameter('category', i);
+					if (category !== undefined && category !== '') body['category'] = category;
+					const customer_location = this.getNodeParameter('customer_location', i, undefined);
+					if (customer_location !== undefined && customer_location !== '') body['customer_location'] = customer_location;
+					const project = this.getNodeParameter('project', i, undefined);
+					if (project !== undefined && project !== '') body['project'] = project;
+					const product = this.getNodeParameter('product', i, undefined);
+					if (product !== undefined && product !== '') body['product'] = product;
+					const parent = this.getNodeParameter('parent', i, undefined);
+					if (parent !== undefined && parent !== '') body['parent'] = parent;
+					const name = this.getNodeParameter('name', i);
+					if (name !== undefined && name !== '') body['name'] = name;
+					const description = this.getNodeParameter('description', i, undefined);
+					if (description !== undefined && description !== '') body['description'] = description;
+					const internal_code = this.getNodeParameter('internal_code', i, undefined);
+					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
+					const serial_number_or_uri = this.getNodeParameter('serial_number_or_uri', i, undefined);
+					if (serial_number_or_uri !== undefined && serial_number_or_uri !== '') body['serial_number_or_uri'] = serial_number_or_uri;
+					const status = this.getNodeParameter('status', i, undefined);
+					if (status !== undefined && status !== '') body['status'] = status;
+					const installation_date = this.getNodeParameter('installation_date', i, undefined);
+					if (installation_date !== undefined && installation_date !== '') body['installation_date'] = installation_date;
+					const warranty_expiration = this.getNodeParameter('warranty_expiration', i, undefined);
+					if (warranty_expiration !== undefined && warranty_expiration !== '') body['warranty_expiration'] = warranty_expiration;
+					const is_customer_visible = this.getNodeParameter('is_customer_visible', i, undefined);
+					if (is_customer_visible !== undefined && is_customer_visible !== '') body['is_customer_visible'] = is_customer_visible;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/add_customer_asset`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'customerAsset' && operation === 'update') {
+					const asset_id = this.getNodeParameter('asset_id', i) as string;
+					const body: IDataObject = {};
+					const category = this.getNodeParameter('category', i);
+					if (category !== undefined && category !== '') body['category'] = category;
+					const customer_location = this.getNodeParameter('customer_location', i, undefined);
+					if (customer_location !== undefined && customer_location !== '') body['customer_location'] = customer_location;
+					const project = this.getNodeParameter('project', i, undefined);
+					if (project !== undefined && project !== '') body['project'] = project;
+					const product = this.getNodeParameter('product', i, undefined);
+					if (product !== undefined && product !== '') body['product'] = product;
+					const parent = this.getNodeParameter('parent', i, undefined);
+					if (parent !== undefined && parent !== '') body['parent'] = parent;
+					const name = this.getNodeParameter('name', i);
+					if (name !== undefined && name !== '') body['name'] = name;
+					const description = this.getNodeParameter('description', i, undefined);
+					if (description !== undefined && description !== '') body['description'] = description;
+					const internal_code = this.getNodeParameter('internal_code', i, undefined);
+					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
+					const serial_number_or_uri = this.getNodeParameter('serial_number_or_uri', i, undefined);
+					if (serial_number_or_uri !== undefined && serial_number_or_uri !== '') body['serial_number_or_uri'] = serial_number_or_uri;
+					const status = this.getNodeParameter('status', i, undefined);
+					if (status !== undefined && status !== '') body['status'] = status;
+					const installation_date = this.getNodeParameter('installation_date', i, undefined);
+					if (installation_date !== undefined && installation_date !== '') body['installation_date'] = installation_date;
+					const warranty_expiration = this.getNodeParameter('warranty_expiration', i, undefined);
+					if (warranty_expiration !== undefined && warranty_expiration !== '') body['warranty_expiration'] = warranty_expiration;
+					const is_customer_visible = this.getNodeParameter('is_customer_visible', i, undefined);
+					if (is_customer_visible !== undefined && is_customer_visible !== '') body['is_customer_visible'] = is_customer_visible;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PATCH',
+							url: `${apiBase}/edit_customer_asset/${asset_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'customerAsset' && operation === 'delete') {
+					const asset_id = this.getNodeParameter('asset_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'DELETE',
+							url: `${apiBase}/delete_customer_asset/${asset_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'assetCategory' && operation === 'list') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/list_asset_categories`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'assetCategory' && operation === 'create') {
+					const body: IDataObject = {};
+					const name = this.getNodeParameter('name', i);
+					if (name !== undefined && name !== '') body['name'] = name;
+					const description = this.getNodeParameter('description', i, undefined);
+					if (description !== undefined && description !== '') body['description'] = description;
+					const internal_code = this.getNodeParameter('internal_code', i, undefined);
+					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
+					const is_active = this.getNodeParameter('is_active', i, undefined);
+					if (is_active !== undefined && is_active !== '') body['is_active'] = is_active;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/add_asset_category`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'assetCategory' && operation === 'update') {
+					const category_id = this.getNodeParameter('category_id', i) as string;
+					const body: IDataObject = {};
+					const name = this.getNodeParameter('name', i);
+					if (name !== undefined && name !== '') body['name'] = name;
+					const description = this.getNodeParameter('description', i, undefined);
+					if (description !== undefined && description !== '') body['description'] = description;
+					const internal_code = this.getNodeParameter('internal_code', i, undefined);
+					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
+					const is_active = this.getNodeParameter('is_active', i, undefined);
+					if (is_active !== undefined && is_active !== '') body['is_active'] = is_active;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PATCH',
+							url: `${apiBase}/edit_asset_category/${category_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'assetCategory' && operation === 'delete') {
+					const category_id = this.getNodeParameter('category_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'DELETE',
+							url: `${apiBase}/delete_asset_category/${category_id}`,
 							json: true,
 						},
 					)) as IDataObject;
