@@ -35,7 +35,7 @@ You need a Proiect.ro API key to use this node:
 
 ### Proiect.ro (Action Node)
 
-Perform operations on your Proiect.ro data. **14 resources, 99 operations:**
+Perform operations on your Proiect.ro data. **18 resources, 115 operations:**
 
 | Resource | Operations |
 |---|---|
@@ -53,18 +53,27 @@ Perform operations on your Proiect.ro data. **14 resources, 99 operations:**
 | **Resource** | List All, Create, Update, Delete |
 | **Process Definition** | List All, Get, Create, Update, Delete |
 | **Webhook** | List All, Create, Update, Delete |
+| **Location** | List All, Create, Update, Delete |
+| **Customer Location** | List, Create, Update, Delete |
+| **Customer Asset** | List, Create, Update, Delete |
+| **Asset Category** | List All, Create, Update, Delete |
 
 ### Proiect.ro Trigger
 
-Starts a workflow when an event occurs in Proiect.ro. Uses real-time webhooks — **65 event types** including:
+Starts a workflow when an event occurs in Proiect.ro. Uses real-time webhooks — **77 event types** including:
 
 - Customer, Contact, Proposal, Payment, and Work Item CRUD events
 - Operational Work Item lifecycle: created, moved, approved, rejected, reassigned
 - Tag and Label attachment/detachment across all entity types
-- Process definition and webhook management events
-- Support request lifecycle events
+- Location, Customer Location, Customer Asset and Asset Category CRUD events
+- Process definition, resource and webhook management events
+- Support request created; team member invited / removed
 
 Webhook payloads are verified using **HMAC-SHA256 signature verification** with replay protection.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md).
 
 ## Links
 

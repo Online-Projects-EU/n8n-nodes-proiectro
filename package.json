@@ -1,19 +1,25 @@
 {
   "name": "n8n-nodes-proiectro",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "n8n nodes to automate your business workflows with Proiect.ro",
   "keywords": ["n8n-community-node-package"],
   "license": "MIT",
   "author": {
-    "name": "Online Projects EU",
+    "name": "Proiect.ro",
+    "email": "contact@proiect.ro",
     "url": "https://proiect.ro"
   },
   "homepage": "https://proiect.ro",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Online-Projects-EU/n8n-nodes-proiectro"
+    "url": "git+https://github.com/Online-Projects-EU/n8n-nodes-proiectro.git"
   },
-  "main": "index.js",
+  "bugs": {
+    "url": "https://github.com/Online-Projects-EU/n8n-nodes-proiectro/issues"
+  },
+  "engines": {
+    "node": ">=20.15"
+  },
   "scripts": {
     "build": "n8n-node build",
     "dev": "n8n-node dev",
@@ -37,9 +43,9 @@
     "n8n-workflow": "*"
   },
   "devDependencies": {
-    "@n8n/node-cli": "*",
-    "typescript": "~5.9.0",
-    "eslint": "~9.32.0",
-    "prettier": "~3.6.0"
+    "@n8n/node-cli": "0.43.4",
+    "typescript": "5.9.3",
+    "eslint": "9.32.0",
+    "prettier": "3.6.2"
   }
 }
