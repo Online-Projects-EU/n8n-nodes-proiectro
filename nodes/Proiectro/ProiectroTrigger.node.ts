@@ -247,11 +247,11 @@ export class ProiectroTrigger implements INodeType {
 						is_active: true,
 						is_secure: true,
 					},
-				})) as { webhook_id: string; secret_key: string };
+				})) as { webhook_id?: string; secret_key?: string | null; url?: string };
 
 				const webhookData = this.getWorkflowStaticData('node');
-				webhookData.webhookId = response.webhook_id;
-				webhookData.secretKey = response.secret_key;
+				webhookData.webhookId = response.webhook_id ?? response.url;
+				webhookData.secretKey = response.secret_key ?? undefined;
 				return true;
 			},
 
