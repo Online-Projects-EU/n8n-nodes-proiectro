@@ -11,99 +11,15 @@ export const assetCategoryOperations: INodeProperties[] = [
 		},
 		options: [
 			{
-				name: 'Create',
-				value: 'create',
-				action: 'Create an asset category',
-				description: 'Create a new asset category',
-			},
-			{
-				name: 'Delete',
-				value: 'delete',
-				action: 'Delete an asset category',
-				description: 'Delete an asset category',
-			},
-			{
 				name: 'List All',
 				value: 'list',
 				action: 'List all asset categories',
 				description: 'List all asset categories',
 			},
-			{
-				name: 'Update',
-				value: 'update',
-				action: 'Update an asset category',
-				description: 'Update an asset category',
-			},
 		],
-		default: 'create',
+		default: 'list',
 	},
 ];
 
 export const assetCategoryFields: INodeProperties[] = [
-	{
-		displayName: 'Name',
-		name: 'name',
-		type: 'string',
-		required: true,
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['assetCategory'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Description',
-		name: 'description',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['assetCategory'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Internal Code',
-		name: 'internal_code',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['assetCategory'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Is Active',
-		name: 'is_active',
-		type: 'boolean',
-		default: false,
-		displayOptions: {
-			show: {
-				resource: ['assetCategory'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Category Name or ID',
-		name: 'category_id',
-		type: 'options',
-		required: true,
-		typeOptions: {
-			loadOptionsMethod: 'getAssetCategories',
-		},
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['assetCategory'],
-				operation: ["update", "delete"],
-			},
-		},
-		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-	},
 ];

@@ -35,39 +35,47 @@ You need a Proiect.ro API key to use this node:
 
 ### Proiect.ro (Action Node)
 
-Perform operations on your Proiect.ro data. **18 resources, 115 operations:**
+Perform operations on your Proiect.ro data. **24 resources, 196 operations.** List operations expose a *Filters* collection (search, owner, customer, dates, status …); optional fields sit in *Additional Fields* so only what you set is sent.
 
 | Resource | Operations |
 |---|---|
 | **Operational Work Item** | List All, Get, Create, Update, Delete, Move, Approve, Reject, Reassign, My Work Items, My Approvals, List Stage Items, History |
-| **Customer** | List All, Get, Create, Update, Delete |
+| **Customer** | List All, Get, Create, Update, Delete, Enrich Company |
 | **Contact** | List, Create, Update, Delete, Invite to Portal |
-| **Proposal** | List, Get, Create, Update, Change Stage, Reopen |
-| **Project** | List All, Get Work Items |
-| **Work Item** | Create, Update, Change Status, Delete |
+| **Proposal** | List, Get, Create, Update, Change Stage, Reopen, List Active, Delete, Log Sales Activity |
+| **Project** | List All, Get Work Items, List by Customer, Update, Delete, Archive, Unarchive, Mark Delivered, Cancel, Reopen, Log Work |
+| **Work Item** | Create, Update, Change Status, Delete, Get |
 | **Payment** | Create, Update, Mark Paid, Mark Unpaid, Delete |
 | **Support Request** | List All, Get, Create, Edit, Close, Reopen, Change Status, Reassign, Add Comment, My Assigned |
 | **Team Member** | List All, Invite, Edit, Remove |
-| **Tag** | List All, Create, Update, Delete, Tag/Untag Customer, Member, Resource, Proposal, Work Item, Operational Work Item |
-| **Label** | List All, Create, Update, Delete, Label/Unlabel Customer, Member, Resource, Proposal, Work Item, Operational Work Item |
+| **Tag** | List All, Create, Tag/Untag Customer, Member, Resource, Proposal, Work Item, Operational Work Item, Document, Lead |
+| **Label** | List All, Create, Label/Unlabel Customer, Member, Resource, Proposal, Work Item, Operational Work Item, Document, Lead |
 | **Resource** | List All, Create, Update, Delete |
-| **Process Definition** | List All, Get, Create, Update, Delete |
-| **Webhook** | List All, Create, Update, Delete |
+| **Process Definition** | List All, Get |
 | **Location** | List All, Create, Update, Delete |
 | **Customer Location** | List, Create, Update, Delete |
 | **Customer Asset** | List, Create, Update, Delete |
-| **Asset Category** | List All, Create, Update, Delete |
+| **Asset Category** | List All |
+| **Comment** | List Work Item Comments, Add to Work Item, Edit Work Item Comment, Delete Work Item Comment, List Operational Item Comments, Add to Operational Item, Edit Operational Item Comment, Delete Operational Item Comment |
+| **Lead** | List All, Get, Create, Update, Delete, Update Status, Claim, Disqualify, Reopen, Reschedule, Convert, Mark Do Not Contact, Log Activity, List Activities |
+| **Lead List** | List All, Get, Create, Update, Delete, Reassign, Reassign Leads |
+| **Document** | List All, Generate for Proposal, Generate for Customer, Generate for Operational Item, Generate for Support Request, Generate for External Support Request, Generate for Location, Generate for Customer Asset, Generate General, Finalize, Update, Delete |
+| **Timer** | List All, Create, Update, Delete |
+| **Custom Form** | List All, Get, Submit, List Submissions, Get Submission, Update Submission Status |
+| **KPI** | 22 indicators: overdue/upcoming payments, revenue at risk, projects at risk, stale/expiring proposals, lead pipeline health, open tickets, queue health, team workload, … |
 
 ### Proiect.ro Trigger
 
-Starts a workflow when an event occurs in Proiect.ro. Uses real-time webhooks — **77 event types** including:
+Starts a workflow when an event occurs in Proiect.ro. Uses real-time webhooks — **142 event types** including:
 
-- Customer, Contact, Proposal, Payment, and Work Item CRUD events
-- Operational Work Item lifecycle: created, moved, approved, rejected, reassigned
-- Tag and Label attachment/detachment across all entity types
-- Location, Customer Location, Customer Asset and Asset Category CRUD events
-- Process definition, resource and webhook management events
-- Support request created; team member invited / removed
+- Leads: created, status updated, claimed, disqualified, reopened, converted; lead lists created / reassigned
+- Support requests (internal, customer and partner): created, status changed, reassigned, queue transferred, solution accepted / rejected, closed, reopened, comment added
+- Operational Work Items: created, moved, approved, rejected, reassigned
+- Proposals: created, stage changed, accepted, reopened; sales activity logged; payments created / paid / unpaid
+- Projects: updated, delivered, cancelled, reopened, archived; work items created / status changed; work logged
+- Documents generated / finalized; forms submitted; comments added
+- Customers, contacts, locations, assets, resources, bookings, timers, team invitations
+- Tag and Label attachment / detachment across all entity types
 
 Webhook payloads are verified using **HMAC-SHA256 signature verification** with replay protection.
 

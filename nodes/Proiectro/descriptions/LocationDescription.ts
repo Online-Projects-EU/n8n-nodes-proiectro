@@ -54,90 +54,6 @@ export const locationFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Description',
-		name: 'description',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['location'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Internal Code',
-		name: 'internal_code',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['location'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Country',
-		name: 'country',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['location'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Parent',
-		name: 'parent',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['location'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Is Active',
-		name: 'is_active',
-		type: 'boolean',
-		default: false,
-		displayOptions: {
-			show: {
-				resource: ['location'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Latitude',
-		name: 'latitude',
-		type: 'number',
-		default: 0,
-		displayOptions: {
-			show: {
-				resource: ['location'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Longitude',
-		name: 'longitude',
-		type: 'number',
-		default: 0,
-		displayOptions: {
-			show: {
-				resource: ['location'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
 		displayName: 'Location ID',
 		name: 'location_id',
 		type: 'string',
@@ -149,5 +65,143 @@ export const locationFields: INodeProperties[] = [
 				operation: ["update", "delete"],
 			},
 		},
+	},
+	{
+		displayName: 'Delete Descendants',
+		name: 'delete_descendants',
+		type: 'boolean',
+		default: false,
+		displayOptions: {
+			show: {
+				resource: ['location'],
+				operation: ["delete"],
+			},
+		},
+	},
+	{
+		displayName: 'Reparent ID',
+		name: 'reparent_id',
+		type: 'string',
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['location'],
+				operation: ["delete"],
+			},
+		},
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['location'],
+				operation: ["create"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Country',
+				name: 'country',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Description',
+				name: 'description',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Internal Code',
+				name: 'internal_code',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Is Active',
+				name: 'is_active',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Latitude',
+				name: 'latitude',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Longitude',
+				name: 'longitude',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Parent',
+				name: 'parent',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['location'],
+				operation: ["update"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Country',
+				name: 'country',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Description',
+				name: 'description',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Internal Code',
+				name: 'internal_code',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Is Active',
+				name: 'is_active',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Latitude',
+				name: 'latitude',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Longitude',
+				name: 'longitude',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Parent',
+				name: 'parent',
+				type: 'string',
+				default: '',
+			},
+		],
 	},
 ];

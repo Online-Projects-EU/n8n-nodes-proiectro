@@ -1,0 +1,701 @@
+import type { INodeProperties } from 'n8n-workflow';
+
+export const leadOperations: INodeProperties[] = [
+	{
+		displayName: 'Operation',
+		name: 'operation',
+		type: 'options',
+		noDataExpression: true,
+		displayOptions: {
+			show: { resource: ['lead'] },
+		},
+		options: [
+			{
+				name: 'Claim',
+				value: 'claim',
+				action: 'Claim a lead',
+				description: 'Claim an unowned lead for yourself',
+			},
+			{
+				name: 'Convert',
+				value: 'convert',
+				action: 'Convert a lead',
+				description: 'Convert a lead into a customer (existing or new)',
+			},
+			{
+				name: 'Create',
+				value: 'create',
+				action: 'Create a lead',
+				description: 'Capture a new lead',
+			},
+			{
+				name: 'Delete',
+				value: 'delete',
+				action: 'Delete a lead',
+				description: 'Delete a lead',
+			},
+			{
+				name: 'Disqualify',
+				value: 'disqualify',
+				action: 'Disqualify a lead',
+				description: 'Disqualify a lead',
+			},
+			{
+				name: 'Get',
+				value: 'get',
+				action: 'Get a lead',
+				description: 'Get a single lead by ID',
+			},
+			{
+				name: 'List Activities',
+				value: 'list_activities',
+				action: 'List the activities of a lead',
+				description: 'List a lead\'s activities (paged)',
+			},
+			{
+				name: 'List All',
+				value: 'list',
+				action: 'List all leads',
+				description: 'List leads across all lists',
+			},
+			{
+				name: 'Log Activity',
+				value: 'log_activity',
+				action: 'Log a lead activity',
+				description: 'Log an activity (call, email, meeting, note) on a lead',
+			},
+			{
+				name: 'Mark Do Not Contact',
+				value: 'do_not_contact',
+				action: 'Mark a lead as do not contact',
+				description: 'Mark a lead as do-not-contact',
+			},
+			{
+				name: 'Reopen',
+				value: 'reopen',
+				action: 'Reopen a lead',
+				description: 'Reopen a disqualified or do-not-contact lead',
+			},
+			{
+				name: 'Reschedule',
+				value: 'reschedule',
+				action: 'Reschedule a lead',
+				description: 'Set the lead\'s next action date, channel and note',
+			},
+			{
+				name: 'Update',
+				value: 'update',
+				action: 'Update a lead',
+				description: 'Update a lead\'s details',
+			},
+			{
+				name: 'Update Status',
+				value: 'update_status',
+				action: 'Update the status of a lead',
+				description: 'Move a lead to another pipeline status',
+			},
+		],
+		default: 'claim',
+	},
+];
+
+export const leadFields: INodeProperties[] = [
+	{
+		displayName: 'Lead ID',
+		name: 'lead_id',
+		type: 'string',
+		required: true,
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['lead'],
+				operation: ["get", "update", "delete", "update_status", "claim", "disqualify", "reopen", "reschedule", "convert", "do_not_contact", "log_activity", "list_activities"],
+			},
+		},
+	},
+	{
+		displayName: 'Name',
+		name: 'name',
+		type: 'string',
+		required: true,
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['lead'],
+				operation: ["create", "update"],
+			},
+		},
+	},
+	{
+		displayName: 'Updated At',
+		name: 'updated_at',
+		type: 'string',
+		required: true,
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['lead'],
+				operation: ["update", "update_status", "claim", "disqualify", "reopen", "reschedule", "convert", "do_not_contact", "log_activity"],
+			},
+		},
+	},
+	{
+		displayName: 'Status',
+		name: 'status',
+		type: 'options',
+		required: true,
+		options: [
+			{ name: 'Contacted', value: 'contacted' },
+			{ name: 'New', value: 'new' },
+			{ name: 'Nurturing', value: 'nurturing' },
+			{ name: 'Qualified', value: 'qualified' },
+			{ name: 'Replied', value: 'replied' },
+		],
+		default: 'new',
+		displayOptions: {
+			show: {
+				resource: ['lead'],
+				operation: ["update_status"],
+			},
+		},
+	},
+	{
+		displayName: 'Activity Type',
+		name: 'activity_type',
+		type: 'string',
+		required: true,
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['lead'],
+				operation: ["log_activity"],
+			},
+		},
+	},
+	{
+		displayName: 'Note',
+		name: 'note',
+		type: 'string',
+		required: true,
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['lead'],
+				operation: ["log_activity"],
+			},
+		},
+	},
+	{
+		displayName: 'Page Number',
+		name: 'page_number',
+		type: 'number',
+		required: true,
+		default: 0,
+		displayOptions: {
+			show: {
+				resource: ['lead'],
+				operation: ["list_activities"],
+			},
+		},
+	},
+	{
+		displayName: 'Filters',
+		name: 'filters',
+		type: 'collection',
+		placeholder: 'Add Filter',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['lead'],
+				operation: ["list"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Has Email',
+				name: 'has_email',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Lead List',
+				name: 'lead_list',
+				type: 'string',
+				default: '',
+				description: 'Filter by list assignment',
+			},
+			{
+				displayName: 'Owner Name or ID',
+				name: 'owner',
+				type: 'options',
+				typeOptions: {
+					loadOptionsMethod: 'getMembers',
+				},
+				default: '',
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			},
+			{
+				displayName: 'Search',
+				name: 'search',
+				type: 'string',
+				default: '',
+				description: 'Search by lead name, company name, or email',
+			},
+			{
+				displayName: 'Source',
+				name: 'source',
+				type: 'string',
+				default: '',
+				description: 'Filter by source',
+			},
+			{
+				displayName: 'Status',
+				name: 'status',
+				type: 'string',
+				default: '',
+				description: 'Filter by status',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['lead'],
+				operation: ["create"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Company Name',
+				name: 'company_name',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Company Url',
+				name: 'company_url',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Country',
+				name: 'country',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Email',
+				name: 'email',
+				type: 'string',
+				placeholder: 'name@email.com',
+				default: '',
+			},
+			{
+				displayName: 'Job Title',
+				name: 'job_title',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Lead List',
+				name: 'lead_list',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Next Action At',
+				name: 'next_action_at',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Next Action Channel',
+				name: 'next_action_channel',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Next Action Note',
+				name: 'next_action_note',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Notes',
+				name: 'notes',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Owner Name or ID',
+				name: 'owner',
+				type: 'options',
+				typeOptions: {
+					loadOptionsMethod: 'getMembers',
+				},
+				default: '',
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			},
+			{
+				displayName: 'Phone',
+				name: 'phone',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Profile Url',
+				name: 'profile_url',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Score',
+				name: 'score',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Source',
+				name: 'source',
+				type: 'options',
+				options: [
+					{ name: 'Cold Email', value: 'cold_email' },
+					{ name: 'Event', value: 'event' },
+					{ name: 'Import', value: 'import' },
+					{ name: 'Linkedin', value: 'linkedin' },
+					{ name: 'Other', value: 'other' },
+					{ name: 'Referral', value: 'referral' },
+					{ name: 'Web Form', value: 'web_form' },
+				],
+				default: 'cold_email',
+			},
+			{
+				displayName: 'Source Note',
+				name: 'source_note',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Status',
+				name: 'status',
+				type: 'options',
+				options: [
+					{ name: 'Contacted', value: 'contacted' },
+					{ name: 'Converted', value: 'converted' },
+					{ name: 'Disqualified', value: 'disqualified' },
+					{ name: 'Do Not Contact', value: 'do_not_contact' },
+					{ name: 'New', value: 'new' },
+					{ name: 'Nurturing', value: 'nurturing' },
+					{ name: 'Qualified', value: 'qualified' },
+					{ name: 'Replied', value: 'replied' },
+				],
+				default: 'new',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['lead'],
+				operation: ["update"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Company Name',
+				name: 'company_name',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Company Url',
+				name: 'company_url',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Country',
+				name: 'country',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Email',
+				name: 'email',
+				type: 'string',
+				placeholder: 'name@email.com',
+				default: '',
+			},
+			{
+				displayName: 'Job Title',
+				name: 'job_title',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Lead List',
+				name: 'lead_list',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Next Action At',
+				name: 'next_action_at',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Next Action Channel',
+				name: 'next_action_channel',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Next Action Note',
+				name: 'next_action_note',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Notes',
+				name: 'notes',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Owner Name or ID',
+				name: 'owner',
+				type: 'options',
+				typeOptions: {
+					loadOptionsMethod: 'getMembers',
+				},
+				default: '',
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			},
+			{
+				displayName: 'Phone',
+				name: 'phone',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Profile Url',
+				name: 'profile_url',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Score',
+				name: 'score',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Source',
+				name: 'source',
+				type: 'options',
+				options: [
+					{ name: 'Cold Email', value: 'cold_email' },
+					{ name: 'Event', value: 'event' },
+					{ name: 'Import', value: 'import' },
+					{ name: 'Linkedin', value: 'linkedin' },
+					{ name: 'Other', value: 'other' },
+					{ name: 'Referral', value: 'referral' },
+					{ name: 'Web Form', value: 'web_form' },
+				],
+				default: 'cold_email',
+			},
+			{
+				displayName: 'Source Note',
+				name: 'source_note',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Status',
+				name: 'status',
+				type: 'options',
+				options: [
+					{ name: 'Contacted', value: 'contacted' },
+					{ name: 'Converted', value: 'converted' },
+					{ name: 'Disqualified', value: 'disqualified' },
+					{ name: 'Do Not Contact', value: 'do_not_contact' },
+					{ name: 'New', value: 'new' },
+					{ name: 'Nurturing', value: 'nurturing' },
+					{ name: 'Qualified', value: 'qualified' },
+					{ name: 'Replied', value: 'replied' },
+				],
+				default: 'new',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['lead'],
+				operation: ["disqualify"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Reason',
+				name: 'reason',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['lead'],
+				operation: ["reschedule"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Next Action At',
+				name: 'next_action_at',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Next Action Channel',
+				name: 'next_action_channel',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Next Action Note',
+				name: 'next_action_note',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['lead'],
+				operation: ["convert"],
+			},
+		},
+		options: [
+			{
+				displayName: 'New Org Country',
+				name: 'new_org_country',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'New Org Currency',
+				name: 'new_org_currency',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'New Org Manager',
+				name: 'new_org_manager',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'New Org Name',
+				name: 'new_org_name',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'New Org Timezone',
+				name: 'new_org_timezone',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Org',
+				name: 'org',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['lead'],
+				operation: ["do_not_contact"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Reason',
+				name: 'reason',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['lead'],
+				operation: ["log_activity"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Next Action At',
+				name: 'next_action_at',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Next Action Channel',
+				name: 'next_action_channel',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Next Action Note',
+				name: 'next_action_note',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+];

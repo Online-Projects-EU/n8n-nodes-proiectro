@@ -1,15 +1,55 @@
 # Changelog
 
-## 0.2.3
+## 0.3.0
 
-- Location: **Latitude** and **Longitude** fields on Create and Update.
-- Customer: **Domains** field on Create and Update.
-- Payment: **Show Sources** field on Create and Update.
-- Requires Node.js >= 20.15 (n8n's own floor).
+24 resources, 196 operations, 142 trigger events (was 18 / 115 / 77).
 
-## 0.2.2
+### New resources
 
-Removed the pre-release hook.
+- **Lead** and **Lead List** — capture leads, update status, claim, disqualify, reschedule, convert
+  to customer, log activities; create and reassign lists.
+- **Document** — generate numbered documents from templates for proposals, customers, operational
+  items, support requests, locations and assets; finalize, update, delete, list.
+- **Comment** — add, edit, delete and list comments on work items and operational work items.
+- **Custom Form** — list forms, submit a form, list and inspect submissions, update a submission's
+  status.
+- **Timer** — create, update, delete and list timers.
+- **KPI** — 22 workspace health indicators (overdue payments, revenue at risk, projects at risk,
+  stale proposals, lead pipeline health, queue health, team workload …) for digests and alerts.
+
+### New operations
+
+- Proposal: List Active (with filters), Delete, Log Sales Activity.
+- Project: List by Customer, Update, Delete, Archive, Unarchive, Mark Delivered, Cancel, Reopen,
+  Log Work.
+- Work Item: Get.
+- Customer: Enrich Company (Romanian company lookup by CUI).
+- Tag / Label: attach and detach on documents and leads.
+
+### Filters and optional fields
+
+- List operations expose a **Filters** collection (search, name, owner, customer, date ranges,
+  status flags) — only the filters you add are sent.
+- Optional fields on Create / Update moved into an **Additional Fields** collection, so an untouched
+  field is no longer sent with a blank or default value.
+- Delete operations on resources, work items, locations and customer assets expose
+  **Delete Descendants** and **Reparent ID**.
+
+### Triggers
+
+65 new events: the full lead lifecycle, internal / customer / partner support request lifecycles,
+project lifecycle, documents, form submissions, comments, work logs, timers, bookings, team
+invitations and portal access.
+
+### Removed
+
+Definition-management operations no longer appear in the node — process definitions and asset
+categories are list/get only, tags and labels are create/list plus attach/detach, and the Webhook
+resource is gone (the Trigger node manages its own subscriptions).
+
+### Package
+
+- Requires Node.js >= 20.15.
 
 ## 0.2.0
 

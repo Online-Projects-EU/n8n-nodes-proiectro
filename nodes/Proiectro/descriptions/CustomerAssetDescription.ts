@@ -88,143 +88,11 @@ export const customerAssetFields: INodeProperties[] = [
 		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
-		displayName: 'Customer Location',
-		name: 'customer_location',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['customerAsset'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Project',
-		name: 'project',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['customerAsset'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Product',
-		name: 'product',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['customerAsset'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Parent',
-		name: 'parent',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['customerAsset'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
 		displayName: 'Name',
 		name: 'name',
 		type: 'string',
 		required: true,
 		default: '',
-		displayOptions: {
-			show: {
-				resource: ['customerAsset'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Description',
-		name: 'description',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['customerAsset'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Internal Code',
-		name: 'internal_code',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['customerAsset'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Serial Number Or Uri',
-		name: 'serial_number_or_uri',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['customerAsset'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Status',
-		name: 'status',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['customerAsset'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Installation Date',
-		name: 'installation_date',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['customerAsset'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Warranty Expiration',
-		name: 'warranty_expiration',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['customerAsset'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Is Customer Visible',
-		name: 'is_customer_visible',
-		type: 'boolean',
-		default: false,
 		displayOptions: {
 			show: {
 				resource: ['customerAsset'],
@@ -244,5 +112,199 @@ export const customerAssetFields: INodeProperties[] = [
 				operation: ["update", "delete"],
 			},
 		},
+	},
+	{
+		displayName: 'Delete Descendants',
+		name: 'delete_descendants',
+		type: 'boolean',
+		default: false,
+		displayOptions: {
+			show: {
+				resource: ['customerAsset'],
+				operation: ["delete"],
+			},
+		},
+	},
+	{
+		displayName: 'Reparent ID',
+		name: 'reparent_id',
+		type: 'string',
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['customerAsset'],
+				operation: ["delete"],
+			},
+		},
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['customerAsset'],
+				operation: ["create"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Customer Location',
+				name: 'customer_location',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Description',
+				name: 'description',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Installation Date',
+				name: 'installation_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Internal Code',
+				name: 'internal_code',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Is Customer Visible',
+				name: 'is_customer_visible',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Parent',
+				name: 'parent',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Product',
+				name: 'product',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Project Name or ID',
+				name: 'project',
+				type: 'options',
+				typeOptions: {
+					loadOptionsMethod: 'getProjects',
+				},
+				default: '',
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			},
+			{
+				displayName: 'Serial Number Or Uri',
+				name: 'serial_number_or_uri',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Status',
+				name: 'status',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Warranty Expiration',
+				name: 'warranty_expiration',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['customerAsset'],
+				operation: ["update"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Customer Location',
+				name: 'customer_location',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Description',
+				name: 'description',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Installation Date',
+				name: 'installation_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Internal Code',
+				name: 'internal_code',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Is Customer Visible',
+				name: 'is_customer_visible',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Parent',
+				name: 'parent',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Product',
+				name: 'product',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Project Name or ID',
+				name: 'project',
+				type: 'options',
+				typeOptions: {
+					loadOptionsMethod: 'getProjects',
+				},
+				default: '',
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			},
+			{
+				displayName: 'Serial Number Or Uri',
+				name: 'serial_number_or_uri',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Status',
+				name: 'status',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Warranty Expiration',
+				name: 'warranty_expiration',
+				type: 'string',
+				default: '',
+			},
+		],
 	},
 ];

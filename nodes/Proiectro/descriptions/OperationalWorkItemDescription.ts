@@ -134,104 +134,10 @@ export const operationalWorkItemFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Description',
-		name: 'description',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['operationalWorkItem'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Customer',
-		name: 'customer',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['operationalWorkItem'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Customer Asset',
-		name: 'customer_asset',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['operationalWorkItem'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Priority',
-		name: 'priority',
-		type: 'options',
-		options: [
-			{ name: 'Critical', value: 'critical' },
-			{ name: 'High', value: 'high' },
-			{ name: 'Low', value: 'low' },
-			{ name: 'Normal', value: 'normal' },
-		],
-		default: 'critical',
-		displayOptions: {
-			show: {
-				resource: ['operationalWorkItem'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Due Date',
-		name: 'due_date',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['operationalWorkItem'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Owner Name or ID',
-		name: 'owner',
-		type: 'options',
-		typeOptions: {
-			loadOptionsMethod: 'getMembers',
-		},
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['operationalWorkItem'],
-				operation: ["update", "reassign"],
-			},
-		},
-		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-	},
-	{
 		displayName: 'Target Stage',
 		name: 'target_stage',
 		type: 'string',
 		required: true,
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['operationalWorkItem'],
-				operation: ["move", "approve"],
-			},
-		},
-	},
-	{
-		displayName: 'Notes',
-		name: 'notes',
-		type: 'string',
 		default: '',
 		displayOptions: {
 			show: {
@@ -269,5 +175,264 @@ export const operationalWorkItemFields: INodeProperties[] = [
 			},
 		},
 		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+	},
+	{
+		displayName: 'Filters',
+		name: 'filters',
+		type: 'collection',
+		placeholder: 'Add Filter',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['operationalWorkItem'],
+				operation: ["list"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Current Stage',
+				name: 'current_stage',
+				type: 'string',
+				default: '',
+				description: 'Filter by current stage',
+			},
+			{
+				displayName: 'Customer',
+				name: 'customer',
+				type: 'string',
+				default: '',
+				description: 'Filter by customer organization',
+			},
+			{
+				displayName: 'Due From',
+				name: 'due_from',
+				type: 'string',
+				default: '',
+				description: 'Due on or after this date, e.g. \'02 Jan, 2025\'',
+			},
+			{
+				displayName: 'Due To',
+				name: 'due_to',
+				type: 'string',
+				default: '',
+				description: 'Due on or before this date, e.g. \'02 Jan, 2025\'',
+			},
+			{
+				displayName: 'Is Finished',
+				name: 'is_finished',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Owner Name or ID',
+				name: 'owner',
+				type: 'options',
+				typeOptions: {
+					loadOptionsMethod: 'getMembers',
+				},
+				default: '',
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			},
+			{
+				displayName: 'Priority',
+				name: 'priority',
+				type: 'string',
+				default: '',
+				description: 'Filter by priority',
+			},
+			{
+				displayName: 'Process',
+				name: 'process',
+				type: 'string',
+				default: '',
+				description: 'Filter by process',
+			},
+			{
+				displayName: 'Search',
+				name: 'search',
+				type: 'string',
+				default: '',
+				description: 'Search by name or description',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['operationalWorkItem'],
+				operation: ["create"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Customer',
+				name: 'customer',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Customer Asset',
+				name: 'customer_asset',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Description',
+				name: 'description',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Due Date',
+				name: 'due_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Priority',
+				name: 'priority',
+				type: 'options',
+				options: [
+					{ name: 'Critical', value: 'critical' },
+					{ name: 'High', value: 'high' },
+					{ name: 'Low', value: 'low' },
+					{ name: 'Normal', value: 'normal' },
+				],
+				default: 'critical',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['operationalWorkItem'],
+				operation: ["update"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Customer',
+				name: 'customer',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Customer Asset',
+				name: 'customer_asset',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Description',
+				name: 'description',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Due Date',
+				name: 'due_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Owner Name or ID',
+				name: 'owner',
+				type: 'options',
+				typeOptions: {
+					loadOptionsMethod: 'getMembers',
+				},
+				default: '',
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			},
+			{
+				displayName: 'Priority',
+				name: 'priority',
+				type: 'options',
+				options: [
+					{ name: 'Critical', value: 'critical' },
+					{ name: 'High', value: 'high' },
+					{ name: 'Low', value: 'low' },
+					{ name: 'Normal', value: 'normal' },
+				],
+				default: 'critical',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['operationalWorkItem'],
+				operation: ["move"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Notes',
+				name: 'notes',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['operationalWorkItem'],
+				operation: ["approve"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Notes',
+				name: 'notes',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['operationalWorkItem'],
+				operation: ["reassign"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Owner Name or ID',
+				name: 'owner',
+				type: 'options',
+				typeOptions: {
+					loadOptionsMethod: 'getMembers',
+				},
+				default: '',
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			},
+		],
 	},
 ];

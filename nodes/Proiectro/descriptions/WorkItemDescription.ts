@@ -29,6 +29,12 @@ export const workItemOperations: INodeProperties[] = [
 				description: 'Delete a work item',
 			},
 			{
+				name: 'Get',
+				value: 'get',
+				action: 'Get a work item',
+				description: 'Get a single project work item by ID',
+			},
+			{
 				name: 'Update',
 				value: 'update',
 				action: 'Update a work item',
@@ -45,130 +51,6 @@ export const workItemFields: INodeProperties[] = [
 		name: 'name',
 		type: 'string',
 		required: true,
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['workItem'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Description',
-		name: 'description',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['workItem'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Estimated Work Hours',
-		name: 'estimated_work_hours',
-		type: 'number',
-		default: 0,
-		displayOptions: {
-			show: {
-				resource: ['workItem'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Planned Start Date',
-		name: 'planned_start_date',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['workItem'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Planned Finish Date',
-		name: 'planned_finish_date',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['workItem'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Estimated Duration Days',
-		name: 'estimated_duration_days',
-		type: 'number',
-		default: 0,
-		displayOptions: {
-			show: {
-				resource: ['workItem'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Constraint Type',
-		name: 'constraint_type',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['workItem'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Constraint Date',
-		name: 'constraint_date',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['workItem'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Owner Name or ID',
-		name: 'owner',
-		type: 'options',
-		typeOptions: {
-			loadOptionsMethod: 'getMembers',
-		},
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['workItem'],
-				operation: ["create", "update"],
-			},
-		},
-		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-	},
-	{
-		displayName: 'Visible To Customer',
-		name: 'visible_to_customer',
-		type: 'boolean',
-		default: false,
-		displayOptions: {
-			show: {
-				resource: ['workItem'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Product',
-		name: 'product',
-		type: 'string',
 		default: '',
 		displayOptions: {
 			show: {
@@ -212,18 +94,6 @@ export const workItemFields: INodeProperties[] = [
 		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
-		displayName: 'Parent Work Item ID',
-		name: 'parent_work_item_id',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['workItem'],
-				operation: ["create"],
-			},
-		},
-	},
-	{
 		displayName: 'Work Item ID',
 		name: 'work_item_id',
 		type: 'string',
@@ -232,7 +102,7 @@ export const workItemFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['workItem'],
-				operation: ["update", "change_status", "delete"],
+				operation: ["update", "change_status", "delete", "get"],
 			},
 		},
 	},
@@ -250,39 +120,224 @@ export const workItemFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Percent Complete',
-		name: 'percent_complete',
-		type: 'number',
-		default: 0,
-		displayOptions: {
-			show: {
-				resource: ['workItem'],
-				operation: ["change_status"],
-			},
-		},
-	},
-	{
-		displayName: 'Is Finished',
-		name: 'is_finished',
+		displayName: 'Delete Descendants',
+		name: 'delete_descendants',
 		type: 'boolean',
 		default: false,
 		displayOptions: {
 			show: {
 				resource: ['workItem'],
-				operation: ["change_status"],
+				operation: ["delete"],
 			},
 		},
 	},
 	{
-		displayName: 'Finished At',
-		name: 'finished_at',
+		displayName: 'Reparent ID',
+		name: 'reparent_id',
 		type: 'string',
 		default: '',
+		displayOptions: {
+			show: {
+				resource: ['workItem'],
+				operation: ["delete"],
+			},
+		},
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['workItem'],
+				operation: ["create"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Constraint Date',
+				name: 'constraint_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Constraint Type',
+				name: 'constraint_type',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Description',
+				name: 'description',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Estimated Duration Days',
+				name: 'estimated_duration_days',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Estimated Work Hours',
+				name: 'estimated_work_hours',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Owner Name or ID',
+				name: 'owner',
+				type: 'options',
+				typeOptions: {
+					loadOptionsMethod: 'getMembers',
+				},
+				default: '',
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			},
+			{
+				displayName: 'Parent Work Item ID',
+				name: 'parent_work_item_id',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Planned Finish Date',
+				name: 'planned_finish_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Planned Start Date',
+				name: 'planned_start_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Product',
+				name: 'product',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Visible To Customer',
+				name: 'visible_to_customer',
+				type: 'boolean',
+				default: false,
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['workItem'],
+				operation: ["update"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Constraint Date',
+				name: 'constraint_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Constraint Type',
+				name: 'constraint_type',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Description',
+				name: 'description',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Estimated Duration Days',
+				name: 'estimated_duration_days',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Estimated Work Hours',
+				name: 'estimated_work_hours',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Owner Name or ID',
+				name: 'owner',
+				type: 'options',
+				typeOptions: {
+					loadOptionsMethod: 'getMembers',
+				},
+				default: '',
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			},
+			{
+				displayName: 'Planned Finish Date',
+				name: 'planned_finish_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Planned Start Date',
+				name: 'planned_start_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Product',
+				name: 'product',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Visible To Customer',
+				name: 'visible_to_customer',
+				type: 'boolean',
+				default: false,
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
 		displayOptions: {
 			show: {
 				resource: ['workItem'],
 				operation: ["change_status"],
 			},
 		},
+		options: [
+			{
+				displayName: 'Finished At',
+				name: 'finished_at',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Is Finished',
+				name: 'is_finished',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Percent Complete',
+				name: 'percent_complete',
+				type: 'number',
+				default: 0,
+			},
+		],
 	},
 ];

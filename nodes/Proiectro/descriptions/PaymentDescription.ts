@@ -60,18 +60,6 @@ export const paymentFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Product ID',
-		name: 'product_id',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['payment'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
 		displayName: 'Name',
 		name: 'name',
 		type: 'string',
@@ -80,19 +68,7 @@ export const paymentFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['payment'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Internal Code',
-		name: 'internal_code',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['payment'],
-				operation: ["create", "update"],
+				operation: ["create"],
 			},
 		},
 	},
@@ -105,43 +81,7 @@ export const paymentFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['payment'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Amount',
-		name: 'amount',
-		type: 'number',
-		default: 0,
-		displayOptions: {
-			show: {
-				resource: ['payment'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Payment Integration ID',
-		name: 'payment_integration_id',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['payment'],
-				operation: ["create", "update", "mark_paid"],
-			},
-		},
-	},
-	{
-		displayName: 'Show Sources',
-		name: 'show_sources',
-		type: 'boolean',
-		default: false,
-		displayOptions: {
-			show: {
-				resource: ['payment'],
-				operation: ["create", "update"],
+				operation: ["create"],
 			},
 		},
 	},
@@ -170,5 +110,128 @@ export const paymentFields: INodeProperties[] = [
 				operation: ["mark_paid"],
 			},
 		},
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['payment'],
+				operation: ["create"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Amount',
+				name: 'amount',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Internal Code',
+				name: 'internal_code',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Payment Integration ID',
+				name: 'payment_integration_id',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Product ID',
+				name: 'product_id',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Show Sources',
+				name: 'show_sources',
+				type: 'boolean',
+				default: false,
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['payment'],
+				operation: ["update"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Amount',
+				name: 'amount',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Due Date',
+				name: 'due_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Internal Code',
+				name: 'internal_code',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Name',
+				name: 'name',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Payment Integration ID',
+				name: 'payment_integration_id',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Product ID',
+				name: 'product_id',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Show Sources',
+				name: 'show_sources',
+				type: 'boolean',
+				default: false,
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['payment'],
+				operation: ["mark_paid"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Payment Integration ID',
+				name: 'payment_integration_id',
+				type: 'string',
+				default: '',
+			},
+		],
 	},
 ];

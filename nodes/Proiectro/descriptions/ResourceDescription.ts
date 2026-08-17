@@ -54,34 +54,10 @@ export const resourceFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Internal Code',
-		name: 'internal_code',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['resource'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
 		displayName: 'Description',
 		name: 'description',
 		type: 'string',
 		required: true,
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['resource'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Parent',
-		name: 'parent',
-		type: 'string',
 		default: '',
 		displayOptions: {
 			show: {
@@ -115,5 +91,125 @@ export const resourceFields: INodeProperties[] = [
 				operation: ["update", "delete"],
 			},
 		},
+	},
+	{
+		displayName: 'Delete Descendants',
+		name: 'delete_descendants',
+		type: 'boolean',
+		default: false,
+		displayOptions: {
+			show: {
+				resource: ['resource'],
+				operation: ["delete"],
+			},
+		},
+	},
+	{
+		displayName: 'Reparent ID',
+		name: 'reparent_id',
+		type: 'string',
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['resource'],
+				operation: ["delete"],
+			},
+		},
+	},
+	{
+		displayName: 'Filters',
+		name: 'filters',
+		type: 'collection',
+		placeholder: 'Add Filter',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['resource'],
+				operation: ["list"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Internal Code',
+				name: 'internal_code',
+				type: 'string',
+				default: '',
+				description: 'Filter by exact internal code',
+			},
+			{
+				displayName: 'Is Bookable',
+				name: 'is_bookable',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Name',
+				name: 'name',
+				type: 'string',
+				default: '',
+				description: 'Filter by resource name',
+			},
+			{
+				displayName: 'Search',
+				name: 'search',
+				type: 'string',
+				default: '',
+				description: 'Search by name or internal code',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['resource'],
+				operation: ["create"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Internal Code',
+				name: 'internal_code',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Parent',
+				name: 'parent',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['resource'],
+				operation: ["update"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Internal Code',
+				name: 'internal_code',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Parent',
+				name: 'parent',
+				type: 'string',
+				default: '',
+			},
+		],
 	},
 ];

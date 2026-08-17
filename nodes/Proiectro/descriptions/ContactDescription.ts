@@ -72,7 +72,7 @@ export const contactFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['contact'],
-				operation: ["create", "update"],
+				operation: ["create"],
 			},
 		},
 	},
@@ -85,7 +85,7 @@ export const contactFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['contact'],
-				operation: ["create", "update"],
+				operation: ["create"],
 			},
 		},
 	},
@@ -98,7 +98,7 @@ export const contactFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['contact'],
-				operation: ["create", "update"],
+				operation: ["create"],
 			},
 		},
 	},
@@ -153,5 +153,38 @@ export const contactFields: INodeProperties[] = [
 				operation: ["update", "delete", "invite"],
 			},
 		},
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['contact'],
+				operation: ["update"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Contact Info Email',
+				name: 'contact_info_email',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Contact Info First Name',
+				name: 'contact_info_first_name',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Contact Info Last Name',
+				name: 'contact_info_last_name',
+				type: 'string',
+				default: '',
+			},
+		],
 	},
 ];

@@ -97,42 +97,6 @@ export const customerLocationFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Description',
-		name: 'description',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['customerLocation'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Internal Code',
-		name: 'internal_code',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['customerLocation'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Is Active',
-		name: 'is_active',
-		type: 'boolean',
-		default: false,
-		displayOptions: {
-			show: {
-				resource: ['customerLocation'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
 		displayName: 'Customer Location ID',
 		name: 'customer_location_id',
 		type: 'string',
@@ -144,5 +108,71 @@ export const customerLocationFields: INodeProperties[] = [
 				operation: ["update", "delete"],
 			},
 		},
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['customerLocation'],
+				operation: ["create"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Description',
+				name: 'description',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Internal Code',
+				name: 'internal_code',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Is Active',
+				name: 'is_active',
+				type: 'boolean',
+				default: false,
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['customerLocation'],
+				operation: ["update"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Description',
+				name: 'description',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Internal Code',
+				name: 'internal_code',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Is Active',
+				name: 'is_active',
+				type: 'boolean',
+				default: false,
+			},
+		],
 	},
 ];

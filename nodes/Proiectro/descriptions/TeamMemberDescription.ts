@@ -85,68 +85,6 @@ export const teamMemberFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Work Email',
-		name: 'work_email',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['teamMember'],
-				operation: ["edit"],
-			},
-		},
-	},
-	{
-		displayName: 'Work Email Alternative',
-		name: 'work_email_alternative',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['teamMember'],
-				operation: ["edit"],
-			},
-		},
-		description: 'Email address visible to customers in their portal',
-	},
-	{
-		displayName: 'Work Phone',
-		name: 'work_phone',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['teamMember'],
-				operation: ["edit"],
-			},
-		},
-	},
-	{
-		displayName: 'Work Phone Alternative',
-		name: 'work_phone_alternative',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['teamMember'],
-				operation: ["edit"],
-			},
-		},
-		description: 'Phone number visible to customers in their portal',
-	},
-	{
-		displayName: 'Territory',
-		name: 'territory',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['teamMember'],
-				operation: ["edit"],
-			},
-		},
-	},
-	{
 		displayName: 'Team Name or ID',
 		name: 'team_id',
 		type: 'options',
@@ -162,5 +100,87 @@ export const teamMemberFields: INodeProperties[] = [
 			},
 		},
 		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+	},
+	{
+		displayName: 'Filters',
+		name: 'filters',
+		type: 'collection',
+		placeholder: 'Add Filter',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['teamMember'],
+				operation: ["list"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Is Active',
+				name: 'is_active',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Search',
+				name: 'search',
+				type: 'string',
+				default: '',
+				description: 'Search by name, email, nickname, or work email',
+			},
+			{
+				displayName: 'Work Email',
+				name: 'work_email',
+				type: 'string',
+				default: '',
+				description: 'Filter by work email address',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['teamMember'],
+				operation: ["edit"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Territory',
+				name: 'territory',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Work Email',
+				name: 'work_email',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Work Email Alternative',
+				name: 'work_email_alternative',
+				type: 'string',
+				default: '',
+				description: 'Email address visible to customers in their portal',
+			},
+			{
+				displayName: 'Work Phone',
+				name: 'work_phone',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Work Phone Alternative',
+				name: 'work_phone_alternative',
+				type: 'string',
+				default: '',
+				description: 'Phone number visible to customers in their portal',
+			},
+		],
 	},
 ];

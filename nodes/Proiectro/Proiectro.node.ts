@@ -15,9 +15,17 @@ import {
 	assetCategoryOperations,
 } from './descriptions/AssetCategoryDescription';
 import {
+	commentFields,
+	commentOperations,
+} from './descriptions/CommentDescription';
+import {
 	contactFields,
 	contactOperations,
 } from './descriptions/ContactDescription';
+import {
+	customFormFields,
+	customFormOperations,
+} from './descriptions/CustomFormDescription';
 import {
 	customerFields,
 	customerOperations,
@@ -31,9 +39,25 @@ import {
 	customerLocationOperations,
 } from './descriptions/CustomerLocationDescription';
 import {
+	documentFields,
+	documentOperations,
+} from './descriptions/DocumentDescription';
+import {
+	kpiFields,
+	kpiOperations,
+} from './descriptions/KpiDescription';
+import {
 	labelFields,
 	labelOperations,
 } from './descriptions/LabelDescription';
+import {
+	leadFields,
+	leadOperations,
+} from './descriptions/LeadDescription';
+import {
+	leadListFields,
+	leadListOperations,
+} from './descriptions/LeadListDescription';
 import {
 	locationFields,
 	locationOperations,
@@ -75,9 +99,9 @@ import {
 	teamMemberOperations,
 } from './descriptions/TeamMemberDescription';
 import {
-	webhookFields,
-	webhookOperations,
-} from './descriptions/WebhookDescription';
+	timerFields,
+	timerOperations,
+} from './descriptions/TimerDescription';
 import {
 	workItemFields,
 	workItemOperations,
@@ -116,12 +140,22 @@ export class Proiectro implements INodeType {
 					{
 						name: 'Asset Category',
 						value: 'assetCategory',
-						description: 'Manage asset categories',
+						description: 'Look up asset categories',
+					},
+					{
+						name: 'Comment',
+						value: 'comment',
+						description: 'Comments on work items and operational work items',
 					},
 					{
 						name: 'Contact',
 						value: 'contact',
 						description: 'Manage contacts within organizations',
+					},
+					{
+						name: 'Custom Form',
+						value: 'customForm',
+						description: 'Submit custom forms and work with their submissions',
 					},
 					{
 						name: 'Customer',
@@ -139,9 +173,29 @@ export class Proiectro implements INodeType {
 						description: 'Manage customer locations (link customers to locations)',
 					},
 					{
+						name: 'Document',
+						value: 'document',
+						description: 'Generate numbered documents from templates',
+					},
+					{
+						name: 'KPI',
+						value: 'kpi',
+						description: 'Workspace health indicators for digests and alerts',
+					},
+					{
 						name: 'Label',
 						value: 'label',
-						description: 'Manage labels (key-value pairs) and attach them to entities',
+						description: 'Create labels (key-value pairs) and attach them to entities',
+					},
+					{
+						name: 'Lead',
+						value: 'lead',
+						description: 'Capture leads and move them through the pipeline',
+					},
+					{
+						name: 'Lead List',
+						value: 'leadList',
+						description: 'Lists that group leads for a campaign or an owner',
 					},
 					{
 						name: 'Location',
@@ -161,7 +215,7 @@ export class Proiectro implements INodeType {
 					{
 						name: 'Process Definition',
 						value: 'processDefinition',
-						description: 'Manage operational process definitions',
+						description: 'Look up operational process definitions',
 					},
 					{
 						name: 'Project',
@@ -186,7 +240,7 @@ export class Proiectro implements INodeType {
 					{
 						name: 'Tag',
 						value: 'tag',
-						description: 'Manage tags and attach them to entities',
+						description: 'Create tags and attach them to entities',
 					},
 					{
 						name: 'Team Member',
@@ -194,9 +248,9 @@ export class Proiectro implements INodeType {
 						description: 'Manage team members in the workspace',
 					},
 					{
-						name: 'Webhook',
-						value: 'webhook',
-						description: 'Manage webhook subscriptions',
+						name: 'Timer',
+						value: 'timer',
+						description: 'Scheduled timers that fire automation events',
 					},
 					{
 						name: 'Work Item',
@@ -208,16 +262,28 @@ export class Proiectro implements INodeType {
 			},
 			...assetCategoryOperations,
 			...assetCategoryFields,
+			...commentOperations,
+			...commentFields,
 			...contactOperations,
 			...contactFields,
+			...customFormOperations,
+			...customFormFields,
 			...customerOperations,
 			...customerFields,
 			...customerAssetOperations,
 			...customerAssetFields,
 			...customerLocationOperations,
 			...customerLocationFields,
+			...documentOperations,
+			...documentFields,
+			...kpiOperations,
+			...kpiFields,
 			...labelOperations,
 			...labelFields,
+			...leadOperations,
+			...leadFields,
+			...leadListOperations,
+			...leadListFields,
 			...locationOperations,
 			...locationFields,
 			...operationalWorkItemOperations,
@@ -238,8 +304,8 @@ export class Proiectro implements INodeType {
 			...tagFields,
 			...teamMemberOperations,
 			...teamMemberFields,
-			...webhookOperations,
-			...webhookFields,
+			...timerOperations,
+			...timerFields,
 			...workItemOperations,
 			...workItemFields,
 		],
@@ -409,6 +475,42 @@ export class Proiectro implements INodeType {
 					value: item.id as string,
 				}));
 			},
+			async getDocumentTemplates(
+				this: ILoadOptionsFunctions,
+			): Promise<INodePropertyOptions[]> {
+				const credentials = await this.getCredentials('proiectroApi');
+				const response = (await this.helpers.httpRequestWithAuthentication.call(
+					this,
+					'proiectroApi',
+					{
+						method: 'GET',
+						url: `${credentials.baseUrl}/api/v1/${credentials.workspacePath}/document_templates_list`,
+						json: true,
+					},
+				)) as { document_templates: Array<Record<string, unknown>> };
+				return (response.document_templates ?? []).map((item) => ({
+					name: (item.name as string),
+					value: item.id as string,
+				}));
+			},
+			async getCustomForms(
+				this: ILoadOptionsFunctions,
+			): Promise<INodePropertyOptions[]> {
+				const credentials = await this.getCredentials('proiectroApi');
+				const response = (await this.helpers.httpRequestWithAuthentication.call(
+					this,
+					'proiectroApi',
+					{
+						method: 'GET',
+						url: `${credentials.baseUrl}/api/v1/${credentials.workspacePath}/custom_forms`,
+						json: true,
+					},
+				)) as { custom_forms: Array<Record<string, unknown>> };
+				return (response.custom_forms ?? []).map((item) => ({
+					name: (item.name as string),
+					value: item.id as string,
+				}));
+			},
 		},
 	};
 
@@ -429,12 +531,15 @@ export class Proiectro implements INodeType {
 
 
 				if (resource === 'operationalWorkItem' && operation === 'list') {
+					const qs: IDataObject = {};
+					Object.assign(qs, this.getNodeParameter('filters', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
 						{
 							method: 'GET',
 							url: `${apiBase}/tasks`,
+							qs,
 							json: true,
 						},
 					)) as IDataObject;
@@ -453,20 +558,9 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'operationalWorkItem' && operation === 'create') {
 					const body: IDataObject = {};
-					const process = this.getNodeParameter('process', i);
-					if (process !== undefined && process !== '') body['process'] = process;
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const description = this.getNodeParameter('description', i, undefined);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const customer = this.getNodeParameter('customer', i, undefined);
-					if (customer !== undefined && customer !== '') body['customer'] = customer;
-					const customer_asset = this.getNodeParameter('customer_asset', i, undefined);
-					if (customer_asset !== undefined && customer_asset !== '') body['customer_asset'] = customer_asset;
-					const priority = this.getNodeParameter('priority', i, undefined);
-					if (priority !== undefined && priority !== '') body['priority'] = priority;
-					const due_date = this.getNodeParameter('due_date', i, undefined);
-					if (due_date !== undefined && due_date !== '') body['due_date'] = due_date;
+					body['process'] = this.getNodeParameter('process', i) as string | number | boolean;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -481,20 +575,8 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'operationalWorkItem' && operation === 'update') {
 					const item_id = this.getNodeParameter('item_id', i) as string;
 					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const description = this.getNodeParameter('description', i, undefined);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const customer = this.getNodeParameter('customer', i, undefined);
-					if (customer !== undefined && customer !== '') body['customer'] = customer;
-					const customer_asset = this.getNodeParameter('customer_asset', i, undefined);
-					if (customer_asset !== undefined && customer_asset !== '') body['customer_asset'] = customer_asset;
-					const priority = this.getNodeParameter('priority', i, undefined);
-					if (priority !== undefined && priority !== '') body['priority'] = priority;
-					const due_date = this.getNodeParameter('due_date', i, undefined);
-					if (due_date !== undefined && due_date !== '') body['due_date'] = due_date;
-					const owner = this.getNodeParameter('owner', i, undefined);
-					if (owner !== undefined && owner !== '') body['owner'] = owner;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -521,10 +603,8 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'operationalWorkItem' && operation === 'move') {
 					const item_id = this.getNodeParameter('item_id', i) as string;
 					const body: IDataObject = {};
-					const target_stage = this.getNodeParameter('target_stage', i);
-					if (target_stage !== undefined && target_stage !== '') body['target_stage'] = target_stage;
-					const notes = this.getNodeParameter('notes', i, undefined);
-					if (notes !== undefined && notes !== '') body['notes'] = notes;
+					body['target_stage'] = this.getNodeParameter('target_stage', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -539,10 +619,8 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'operationalWorkItem' && operation === 'approve') {
 					const item_id = this.getNodeParameter('item_id', i) as string;
 					const body: IDataObject = {};
-					const target_stage = this.getNodeParameter('target_stage', i);
-					if (target_stage !== undefined && target_stage !== '') body['target_stage'] = target_stage;
-					const notes = this.getNodeParameter('notes', i, undefined);
-					if (notes !== undefined && notes !== '') body['notes'] = notes;
+					body['target_stage'] = this.getNodeParameter('target_stage', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -557,8 +635,7 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'operationalWorkItem' && operation === 'reject') {
 					const item_id = this.getNodeParameter('item_id', i) as string;
 					const body: IDataObject = {};
-					const reason = this.getNodeParameter('reason', i);
-					if (reason !== undefined && reason !== '') body['reason'] = reason;
+					body['reason'] = this.getNodeParameter('reason', i) as string | number | boolean;
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -573,8 +650,7 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'operationalWorkItem' && operation === 'reassign') {
 					const item_id = this.getNodeParameter('item_id', i) as string;
 					const body: IDataObject = {};
-					const owner = this.getNodeParameter('owner', i, undefined);
-					if (owner !== undefined && owner !== '') body['owner'] = owner;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -633,12 +709,15 @@ export class Proiectro implements INodeType {
 					)) as IDataObject;
 
 				} else if (resource === 'customer' && operation === 'list') {
+					const qs: IDataObject = {};
+					Object.assign(qs, this.getNodeParameter('filters', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
 						{
 							method: 'GET',
 							url: `${apiBase}/tenant_orgs`,
+							qs,
 							json: true,
 						},
 					)) as IDataObject;
@@ -657,20 +736,13 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'customer' && operation === 'create') {
 					const body: IDataObject = {};
-					const parent_id = this.getNodeParameter('parent_id', i);
-					if (parent_id !== undefined && parent_id !== '') body['parent_id'] = parent_id;
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const timezone = this.getNodeParameter('timezone', i);
-					if (timezone !== undefined && timezone !== '') body['timezone'] = timezone;
-					const default_currency = this.getNodeParameter('default_currency', i);
-					if (default_currency !== undefined && default_currency !== '') body['default_currency'] = default_currency;
-					const country = this.getNodeParameter('country', i);
-					if (country !== undefined && country !== '') body['country'] = country;
-					const manager = this.getNodeParameter('manager', i);
-					if (manager !== undefined && manager !== '') body['manager'] = manager;
-					const domains = this.getNodeParameter('domains', i, undefined);
-					if (domains !== undefined && domains !== '') body['domains'] = domains;
+					body['parent_id'] = this.getNodeParameter('parent_id', i) as string | number | boolean;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					body['timezone'] = this.getNodeParameter('timezone', i) as string | number | boolean;
+					body['default_currency'] = this.getNodeParameter('default_currency', i) as string | number | boolean;
+					body['country'] = this.getNodeParameter('country', i) as string | number | boolean;
+					body['manager'] = this.getNodeParameter('manager', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -685,18 +757,12 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'customer' && operation === 'update') {
 					const subtenant_id = this.getNodeParameter('subtenant_id', i) as string;
 					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const timezone = this.getNodeParameter('timezone', i);
-					if (timezone !== undefined && timezone !== '') body['timezone'] = timezone;
-					const default_currency = this.getNodeParameter('default_currency', i);
-					if (default_currency !== undefined && default_currency !== '') body['default_currency'] = default_currency;
-					const country = this.getNodeParameter('country', i);
-					if (country !== undefined && country !== '') body['country'] = country;
-					const manager = this.getNodeParameter('manager', i);
-					if (manager !== undefined && manager !== '') body['manager'] = manager;
-					const domains = this.getNodeParameter('domains', i, undefined);
-					if (domains !== undefined && domains !== '') body['domains'] = domains;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					body['timezone'] = this.getNodeParameter('timezone', i) as string | number | boolean;
+					body['default_currency'] = this.getNodeParameter('default_currency', i) as string | number | boolean;
+					body['country'] = this.getNodeParameter('country', i) as string | number | boolean;
+					body['manager'] = this.getNodeParameter('manager', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -720,6 +786,18 @@ export class Proiectro implements INodeType {
 						},
 					)) as IDataObject;
 
+				} else if (resource === 'customer' && operation === 'enrich') {
+					const cui = this.getNodeParameter('cui', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/enrich_company/${cui}`,
+							json: true,
+						},
+					)) as IDataObject;
+
 				} else if (resource === 'contact' && operation === 'list') {
 					const org_id = this.getNodeParameter('org_id', i) as string;
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
@@ -735,18 +813,12 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'contact' && operation === 'create') {
 					const org_id = this.getNodeParameter('org_id', i) as string;
 					const body: IDataObject = {};
-					const contact_info_first_name = this.getNodeParameter('contact_info_first_name', i);
-					if (contact_info_first_name !== undefined && contact_info_first_name !== '') body['contact_info_first_name'] = contact_info_first_name;
-					const contact_info_last_name = this.getNodeParameter('contact_info_last_name', i);
-					if (contact_info_last_name !== undefined && contact_info_last_name !== '') body['contact_info_last_name'] = contact_info_last_name;
-					const contact_info_email = this.getNodeParameter('contact_info_email', i);
-					if (contact_info_email !== undefined && contact_info_email !== '') body['contact_info_email'] = contact_info_email;
-					const contact_info_phone = this.getNodeParameter('contact_info_phone', i);
-					if (contact_info_phone !== undefined && contact_info_phone !== '') body['contact_info_phone'] = contact_info_phone;
-					const contact_info_address = this.getNodeParameter('contact_info_address', i);
-					if (contact_info_address !== undefined && contact_info_address !== '') body['contact_info_address'] = contact_info_address;
-					const contact_info_job_title = this.getNodeParameter('contact_info_job_title', i);
-					if (contact_info_job_title !== undefined && contact_info_job_title !== '') body['contact_info_job_title'] = contact_info_job_title;
+					body['contact_info_first_name'] = this.getNodeParameter('contact_info_first_name', i) as string | number | boolean;
+					body['contact_info_last_name'] = this.getNodeParameter('contact_info_last_name', i) as string | number | boolean;
+					body['contact_info_email'] = this.getNodeParameter('contact_info_email', i) as string | number | boolean;
+					body['contact_info_phone'] = this.getNodeParameter('contact_info_phone', i) as string | number | boolean;
+					body['contact_info_address'] = this.getNodeParameter('contact_info_address', i) as string | number | boolean;
+					body['contact_info_job_title'] = this.getNodeParameter('contact_info_job_title', i) as string | number | boolean;
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -762,18 +834,10 @@ export class Proiectro implements INodeType {
 					const org_id = this.getNodeParameter('org_id', i) as string;
 					const contact_id = this.getNodeParameter('contact_id', i) as string;
 					const body: IDataObject = {};
-					const contact_info_first_name = this.getNodeParameter('contact_info_first_name', i, undefined);
-					if (contact_info_first_name !== undefined && contact_info_first_name !== '') body['contact_info_first_name'] = contact_info_first_name;
-					const contact_info_last_name = this.getNodeParameter('contact_info_last_name', i, undefined);
-					if (contact_info_last_name !== undefined && contact_info_last_name !== '') body['contact_info_last_name'] = contact_info_last_name;
-					const contact_info_email = this.getNodeParameter('contact_info_email', i, undefined);
-					if (contact_info_email !== undefined && contact_info_email !== '') body['contact_info_email'] = contact_info_email;
-					const contact_info_phone = this.getNodeParameter('contact_info_phone', i);
-					if (contact_info_phone !== undefined && contact_info_phone !== '') body['contact_info_phone'] = contact_info_phone;
-					const contact_info_address = this.getNodeParameter('contact_info_address', i);
-					if (contact_info_address !== undefined && contact_info_address !== '') body['contact_info_address'] = contact_info_address;
-					const contact_info_job_title = this.getNodeParameter('contact_info_job_title', i);
-					if (contact_info_job_title !== undefined && contact_info_job_title !== '') body['contact_info_job_title'] = contact_info_job_title;
+					body['contact_info_phone'] = this.getNodeParameter('contact_info_phone', i) as string | number | boolean;
+					body['contact_info_address'] = this.getNodeParameter('contact_info_address', i) as string | number | boolean;
+					body['contact_info_job_title'] = this.getNodeParameter('contact_info_job_title', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -839,56 +903,15 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'proposal' && operation === 'create') {
 					const body: IDataObject = {};
-					const internal_code = this.getNodeParameter('internal_code', i, undefined);
-					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const description = this.getNodeParameter('description', i);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const customer = this.getNodeParameter('customer', i);
-					if (customer !== undefined && customer !== '') body['customer'] = customer;
-					const rfp_publication = this.getNodeParameter('rfp_publication', i, undefined);
-					if (rfp_publication !== undefined && rfp_publication !== '') body['rfp_publication'] = rfp_publication;
-					const owner = this.getNodeParameter('owner', i);
-					if (owner !== undefined && owner !== '') body['owner'] = owner;
-					const manager = this.getNodeParameter('manager', i);
-					if (manager !== undefined && manager !== '') body['manager'] = manager;
-					const sales_stage = this.getNodeParameter('sales_stage', i);
-					if (sales_stage !== undefined && sales_stage !== '') body['sales_stage'] = sales_stage;
-					const proposal_currency = this.getNodeParameter('proposal_currency', i);
-					if (proposal_currency !== undefined && proposal_currency !== '') body['proposal_currency'] = proposal_currency;
-					const pricing_strategy = this.getNodeParameter('pricing_strategy', i, undefined);
-					if (pricing_strategy !== undefined && pricing_strategy !== '') body['pricing_strategy'] = pricing_strategy;
-					const pricing_adjustment_percent = this.getNodeParameter('pricing_adjustment_percent', i, undefined);
-					if (pricing_adjustment_percent !== undefined && pricing_adjustment_percent !== '') body['pricing_adjustment_percent'] = pricing_adjustment_percent;
-					const pricing_adjustment_amount = this.getNodeParameter('pricing_adjustment_amount', i, undefined);
-					if (pricing_adjustment_amount !== undefined && pricing_adjustment_amount !== '') body['pricing_adjustment_amount'] = pricing_adjustment_amount;
-					const target_margin_percent = this.getNodeParameter('target_margin_percent', i, undefined);
-					if (target_margin_percent !== undefined && target_margin_percent !== '') body['target_margin_percent'] = target_margin_percent;
-					const minimum_margin_percent = this.getNodeParameter('minimum_margin_percent', i, undefined);
-					if (minimum_margin_percent !== undefined && minimum_margin_percent !== '') body['minimum_margin_percent'] = minimum_margin_percent;
-					const proposal_valid_since = this.getNodeParameter('proposal_valid_since', i, undefined);
-					if (proposal_valid_since !== undefined && proposal_valid_since !== '') body['proposal_valid_since'] = proposal_valid_since;
-					const proposal_valid_until = this.getNodeParameter('proposal_valid_until', i, undefined);
-					if (proposal_valid_until !== undefined && proposal_valid_until !== '') body['proposal_valid_until'] = proposal_valid_until;
-					const project_start_date = this.getNodeParameter('project_start_date', i, undefined);
-					if (project_start_date !== undefined && project_start_date !== '') body['project_start_date'] = project_start_date;
-					const project_end_date = this.getNodeParameter('project_end_date', i, undefined);
-					if (project_end_date !== undefined && project_end_date !== '') body['project_end_date'] = project_end_date;
-					const project_enable_booking_management = this.getNodeParameter('project_enable_booking_management', i, undefined);
-					if (project_enable_booking_management !== undefined && project_enable_booking_management !== '') body['project_enable_booking_management'] = project_enable_booking_management;
-					const project_enable_resource_management = this.getNodeParameter('project_enable_resource_management', i, undefined);
-					if (project_enable_resource_management !== undefined && project_enable_resource_management !== '') body['project_enable_resource_management'] = project_enable_resource_management;
-					const project_enable_effort_management = this.getNodeParameter('project_enable_effort_management', i, undefined);
-					if (project_enable_effort_management !== undefined && project_enable_effort_management !== '') body['project_enable_effort_management'] = project_enable_effort_management;
-					const project_enable_financial_management = this.getNodeParameter('project_enable_financial_management', i, undefined);
-					if (project_enable_financial_management !== undefined && project_enable_financial_management !== '') body['project_enable_financial_management'] = project_enable_financial_management;
-					const project_enable_schedule_management = this.getNodeParameter('project_enable_schedule_management', i, undefined);
-					if (project_enable_schedule_management !== undefined && project_enable_schedule_management !== '') body['project_enable_schedule_management'] = project_enable_schedule_management;
-					const project_enable_earned_value_management = this.getNodeParameter('project_enable_earned_value_management', i, undefined);
-					if (project_enable_earned_value_management !== undefined && project_enable_earned_value_management !== '') body['project_enable_earned_value_management'] = project_enable_earned_value_management;
-					const wbsconfiguration = this.getNodeParameter('wbsconfiguration', i);
-					if (wbsconfiguration !== undefined && wbsconfiguration !== '') body['wbsconfiguration'] = wbsconfiguration;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					body['description'] = this.getNodeParameter('description', i) as string | number | boolean;
+					body['customer'] = this.getNodeParameter('customer', i) as string | number | boolean;
+					body['owner'] = this.getNodeParameter('owner', i) as string | number | boolean;
+					body['manager'] = this.getNodeParameter('manager', i) as string | number | boolean;
+					body['sales_stage'] = this.getNodeParameter('sales_stage', i) as string | number | boolean;
+					body['proposal_currency'] = this.getNodeParameter('proposal_currency', i) as string | number | boolean;
+					body['wbsconfiguration'] = this.getNodeParameter('wbsconfiguration', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -903,52 +926,12 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'proposal' && operation === 'update') {
 					const proposal_id = this.getNodeParameter('proposal_id', i) as string;
 					const body: IDataObject = {};
-					const internal_code = this.getNodeParameter('internal_code', i, undefined);
-					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const description = this.getNodeParameter('description', i);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const customer = this.getNodeParameter('customer', i);
-					if (customer !== undefined && customer !== '') body['customer'] = customer;
-					const rfp_publication = this.getNodeParameter('rfp_publication', i, undefined);
-					if (rfp_publication !== undefined && rfp_publication !== '') body['rfp_publication'] = rfp_publication;
-					const owner = this.getNodeParameter('owner', i);
-					if (owner !== undefined && owner !== '') body['owner'] = owner;
-					const proposal_currency = this.getNodeParameter('proposal_currency', i);
-					if (proposal_currency !== undefined && proposal_currency !== '') body['proposal_currency'] = proposal_currency;
-					const pricing_strategy = this.getNodeParameter('pricing_strategy', i, undefined);
-					if (pricing_strategy !== undefined && pricing_strategy !== '') body['pricing_strategy'] = pricing_strategy;
-					const pricing_adjustment_percent = this.getNodeParameter('pricing_adjustment_percent', i, undefined);
-					if (pricing_adjustment_percent !== undefined && pricing_adjustment_percent !== '') body['pricing_adjustment_percent'] = pricing_adjustment_percent;
-					const pricing_adjustment_amount = this.getNodeParameter('pricing_adjustment_amount', i, undefined);
-					if (pricing_adjustment_amount !== undefined && pricing_adjustment_amount !== '') body['pricing_adjustment_amount'] = pricing_adjustment_amount;
-					const target_margin_percent = this.getNodeParameter('target_margin_percent', i, undefined);
-					if (target_margin_percent !== undefined && target_margin_percent !== '') body['target_margin_percent'] = target_margin_percent;
-					const minimum_margin_percent = this.getNodeParameter('minimum_margin_percent', i, undefined);
-					if (minimum_margin_percent !== undefined && minimum_margin_percent !== '') body['minimum_margin_percent'] = minimum_margin_percent;
-					const proposal_valid_since = this.getNodeParameter('proposal_valid_since', i, undefined);
-					if (proposal_valid_since !== undefined && proposal_valid_since !== '') body['proposal_valid_since'] = proposal_valid_since;
-					const proposal_valid_until = this.getNodeParameter('proposal_valid_until', i, undefined);
-					if (proposal_valid_until !== undefined && proposal_valid_until !== '') body['proposal_valid_until'] = proposal_valid_until;
-					const project_start_date = this.getNodeParameter('project_start_date', i, undefined);
-					if (project_start_date !== undefined && project_start_date !== '') body['project_start_date'] = project_start_date;
-					const project_end_date = this.getNodeParameter('project_end_date', i, undefined);
-					if (project_end_date !== undefined && project_end_date !== '') body['project_end_date'] = project_end_date;
-					const project_enable_booking_management = this.getNodeParameter('project_enable_booking_management', i, undefined);
-					if (project_enable_booking_management !== undefined && project_enable_booking_management !== '') body['project_enable_booking_management'] = project_enable_booking_management;
-					const project_enable_resource_management = this.getNodeParameter('project_enable_resource_management', i, undefined);
-					if (project_enable_resource_management !== undefined && project_enable_resource_management !== '') body['project_enable_resource_management'] = project_enable_resource_management;
-					const project_enable_effort_management = this.getNodeParameter('project_enable_effort_management', i, undefined);
-					if (project_enable_effort_management !== undefined && project_enable_effort_management !== '') body['project_enable_effort_management'] = project_enable_effort_management;
-					const project_enable_financial_management = this.getNodeParameter('project_enable_financial_management', i, undefined);
-					if (project_enable_financial_management !== undefined && project_enable_financial_management !== '') body['project_enable_financial_management'] = project_enable_financial_management;
-					const project_enable_schedule_management = this.getNodeParameter('project_enable_schedule_management', i, undefined);
-					if (project_enable_schedule_management !== undefined && project_enable_schedule_management !== '') body['project_enable_schedule_management'] = project_enable_schedule_management;
-					const project_enable_earned_value_management = this.getNodeParameter('project_enable_earned_value_management', i, undefined);
-					if (project_enable_earned_value_management !== undefined && project_enable_earned_value_management !== '') body['project_enable_earned_value_management'] = project_enable_earned_value_management;
-					const wbsconfiguration = this.getNodeParameter('wbsconfiguration', i, undefined);
-					if (wbsconfiguration !== undefined && wbsconfiguration !== '') body['wbsconfiguration'] = wbsconfiguration;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					body['description'] = this.getNodeParameter('description', i) as string | number | boolean;
+					body['customer'] = this.getNodeParameter('customer', i) as string | number | boolean;
+					body['owner'] = this.getNodeParameter('owner', i) as string | number | boolean;
+					body['proposal_currency'] = this.getNodeParameter('proposal_currency', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -964,12 +947,7 @@ export class Proiectro implements INodeType {
 					const proposal_id = this.getNodeParameter('proposal_id', i) as string;
 					const stage_id = this.getNodeParameter('stage_id', i) as string;
 					const body: IDataObject = {};
-					const i_have_followed_the_instructions = this.getNodeParameter('i_have_followed_the_instructions', i, undefined);
-					if (i_have_followed_the_instructions !== undefined && i_have_followed_the_instructions !== '') body['i_have_followed_the_instructions'] = i_have_followed_the_instructions;
-					const contact_id = this.getNodeParameter('contact_id', i, undefined);
-					if (contact_id !== undefined && contact_id !== '') body['contact_id'] = contact_id;
-					const rejection_reason = this.getNodeParameter('rejection_reason', i, undefined);
-					if (rejection_reason !== undefined && rejection_reason !== '') body['rejection_reason'] = rejection_reason;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -995,59 +973,218 @@ export class Proiectro implements INodeType {
 						},
 					)) as IDataObject;
 
+				} else if (resource === 'proposal' && operation === 'list_active') {
+					const qs: IDataObject = {};
+					Object.assign(qs, this.getNodeParameter('filters', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/active_proposals`,
+							qs,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'proposal' && operation === 'delete') {
+					const proposal_id = this.getNodeParameter('proposal_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'DELETE',
+							url: `${apiBase}/delete_proposal/${proposal_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'proposal' && operation === 'log_activity') {
+					const body: IDataObject = {};
+					body['activity_type'] = this.getNodeParameter('activity_type', i) as string | number | boolean;
+					body['note'] = this.getNodeParameter('note', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/add_sales_activity`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
 				} else if (resource === 'project' && operation === 'list') {
+					const qs: IDataObject = {};
+					Object.assign(qs, this.getNodeParameter('filters', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
 						{
 							method: 'GET',
 							url: `${apiBase}/projects`,
+							qs,
 							json: true,
 						},
 					)) as IDataObject;
 
 				} else if (resource === 'project' && operation === 'get_work_items') {
 					const project_id = this.getNodeParameter('project_id', i) as string;
+					const qs: IDataObject = {};
+					Object.assign(qs, this.getNodeParameter('filters', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
 						{
 							method: 'GET',
 							url: `${apiBase}/project_work_items/${project_id}`,
+							qs,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'project' && operation === 'list_by_customer') {
+					const org_id = this.getNodeParameter('org_id', i) as string;
+					const qs: IDataObject = {};
+					Object.assign(qs, this.getNodeParameter('filters', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/org_projects/${org_id}`,
+							qs,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'project' && operation === 'update') {
+					const project_id = this.getNodeParameter('project_id', i) as string;
+					const body: IDataObject = {};
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					body['description'] = this.getNodeParameter('description', i) as string | number | boolean;
+					body['manager'] = this.getNodeParameter('manager', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PATCH',
+							url: `${apiBase}/edit_project/${project_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'project' && operation === 'delete') {
+					const project_id = this.getNodeParameter('project_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'DELETE',
+							url: `${apiBase}/delete_project/${project_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'project' && operation === 'archive') {
+					const project_id = this.getNodeParameter('project_id', i) as string;
+					const body: IDataObject = {};
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PATCH',
+							url: `${apiBase}/archive_project/${project_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'project' && operation === 'unarchive') {
+					const project_id = this.getNodeParameter('project_id', i) as string;
+					const body: IDataObject = {};
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PATCH',
+							url: `${apiBase}/unarchive_project/${project_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'project' && operation === 'mark_delivered') {
+					const project_id = this.getNodeParameter('project_id', i) as string;
+					const body: IDataObject = {};
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PATCH',
+							url: `${apiBase}/mark_project_delivered/${project_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'project' && operation === 'cancel') {
+					const project_id = this.getNodeParameter('project_id', i) as string;
+					const body: IDataObject = {};
+					body['cancellation_reason'] = this.getNodeParameter('cancellation_reason', i) as string | number | boolean;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PATCH',
+							url: `${apiBase}/cancel_project/${project_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'project' && operation === 'reopen') {
+					const project_id = this.getNodeParameter('project_id', i) as string;
+					const body: IDataObject = {};
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PATCH',
+							url: `${apiBase}/reopen_project/${project_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'project' && operation === 'log_work') {
+					const body: IDataObject = {};
+					body['work_item'] = this.getNodeParameter('work_item', i) as string | number | boolean;
+					body['project'] = this.getNodeParameter('project', i) as string | number | boolean;
+					body['member'] = this.getNodeParameter('member', i) as string | number | boolean;
+					body['hours'] = this.getNodeParameter('hours', i) as string | number | boolean;
+					body['date'] = this.getNodeParameter('date', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/add_work_log`,
+							body,
 							json: true,
 						},
 					)) as IDataObject;
 
 				} else if (resource === 'workItem' && operation === 'create') {
 					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const description = this.getNodeParameter('description', i, undefined);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const estimated_work_hours = this.getNodeParameter('estimated_work_hours', i, undefined);
-					if (estimated_work_hours !== undefined && estimated_work_hours !== '') body['estimated_work_hours'] = estimated_work_hours;
-					const planned_start_date = this.getNodeParameter('planned_start_date', i, undefined);
-					if (planned_start_date !== undefined && planned_start_date !== '') body['planned_start_date'] = planned_start_date;
-					const planned_finish_date = this.getNodeParameter('planned_finish_date', i, undefined);
-					if (planned_finish_date !== undefined && planned_finish_date !== '') body['planned_finish_date'] = planned_finish_date;
-					const estimated_duration_days = this.getNodeParameter('estimated_duration_days', i, undefined);
-					if (estimated_duration_days !== undefined && estimated_duration_days !== '') body['estimated_duration_days'] = estimated_duration_days;
-					const constraint_type = this.getNodeParameter('constraint_type', i, undefined);
-					if (constraint_type !== undefined && constraint_type !== '') body['constraint_type'] = constraint_type;
-					const constraint_date = this.getNodeParameter('constraint_date', i, undefined);
-					if (constraint_date !== undefined && constraint_date !== '') body['constraint_date'] = constraint_date;
-					const owner = this.getNodeParameter('owner', i, undefined);
-					if (owner !== undefined && owner !== '') body['owner'] = owner;
-					const visible_to_customer = this.getNodeParameter('visible_to_customer', i, undefined);
-					if (visible_to_customer !== undefined && visible_to_customer !== '') body['visible_to_customer'] = visible_to_customer;
-					const product = this.getNodeParameter('product', i, undefined);
-					if (product !== undefined && product !== '') body['product'] = product;
-					const project_id = this.getNodeParameter('project_id', i);
-					if (project_id !== undefined && project_id !== '') body['project_id'] = project_id;
-					const work_item_type_id = this.getNodeParameter('work_item_type_id', i);
-					if (work_item_type_id !== undefined && work_item_type_id !== '') body['work_item_type_id'] = work_item_type_id;
-					const parent_work_item_id = this.getNodeParameter('parent_work_item_id', i, undefined);
-					if (parent_work_item_id !== undefined && parent_work_item_id !== '') body['parent_work_item_id'] = parent_work_item_id;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					body['project_id'] = this.getNodeParameter('project_id', i) as string | number | boolean;
+					body['work_item_type_id'] = this.getNodeParameter('work_item_type_id', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1062,30 +1199,9 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'workItem' && operation === 'update') {
 					const work_item_id = this.getNodeParameter('work_item_id', i) as string;
 					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const description = this.getNodeParameter('description', i, undefined);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const estimated_work_hours = this.getNodeParameter('estimated_work_hours', i, undefined);
-					if (estimated_work_hours !== undefined && estimated_work_hours !== '') body['estimated_work_hours'] = estimated_work_hours;
-					const planned_start_date = this.getNodeParameter('planned_start_date', i, undefined);
-					if (planned_start_date !== undefined && planned_start_date !== '') body['planned_start_date'] = planned_start_date;
-					const planned_finish_date = this.getNodeParameter('planned_finish_date', i, undefined);
-					if (planned_finish_date !== undefined && planned_finish_date !== '') body['planned_finish_date'] = planned_finish_date;
-					const estimated_duration_days = this.getNodeParameter('estimated_duration_days', i, undefined);
-					if (estimated_duration_days !== undefined && estimated_duration_days !== '') body['estimated_duration_days'] = estimated_duration_days;
-					const constraint_type = this.getNodeParameter('constraint_type', i, undefined);
-					if (constraint_type !== undefined && constraint_type !== '') body['constraint_type'] = constraint_type;
-					const constraint_date = this.getNodeParameter('constraint_date', i, undefined);
-					if (constraint_date !== undefined && constraint_date !== '') body['constraint_date'] = constraint_date;
-					const owner = this.getNodeParameter('owner', i, undefined);
-					if (owner !== undefined && owner !== '') body['owner'] = owner;
-					const visible_to_customer = this.getNodeParameter('visible_to_customer', i, undefined);
-					if (visible_to_customer !== undefined && visible_to_customer !== '') body['visible_to_customer'] = visible_to_customer;
-					const parent = this.getNodeParameter('parent', i);
-					if (parent !== undefined && parent !== '') body['parent'] = parent;
-					const product = this.getNodeParameter('product', i, undefined);
-					if (product !== undefined && product !== '') body['product'] = product;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					body['parent'] = this.getNodeParameter('parent', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1100,12 +1216,7 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'workItem' && operation === 'change_status') {
 					const work_item_id = this.getNodeParameter('work_item_id', i) as string;
 					const body: IDataObject = {};
-					const percent_complete = this.getNodeParameter('percent_complete', i, undefined);
-					if (percent_complete !== undefined && percent_complete !== '') body['percent_complete'] = percent_complete;
-					const is_finished = this.getNodeParameter('is_finished', i, undefined);
-					if (is_finished !== undefined && is_finished !== '') body['is_finished'] = is_finished;
-					const finished_at = this.getNodeParameter('finished_at', i, undefined);
-					if (finished_at !== undefined && finished_at !== '') body['finished_at'] = finished_at;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1119,34 +1230,44 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'workItem' && operation === 'delete') {
 					const work_item_id = this.getNodeParameter('work_item_id', i) as string;
+					const qs: IDataObject = {};
+					{
+						const value = this.getNodeParameter('delete_descendants', i, undefined);
+						if (value !== undefined && value !== '') qs['delete_descendants'] = value as string | number | boolean;
+					}
+					{
+						const value = this.getNodeParameter('reparent_id', i, undefined);
+						if (value !== undefined && value !== '') qs['reparent_id'] = value as string | number | boolean;
+					}
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
 						{
 							method: 'DELETE',
 							url: `${apiBase}/delete_work_item/${work_item_id}`,
+							qs,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'workItem' && operation === 'get') {
+					const work_item_id = this.getNodeParameter('work_item_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/project_work_item_detail/${work_item_id}`,
 							json: true,
 						},
 					)) as IDataObject;
 
 				} else if (resource === 'payment' && operation === 'create') {
 					const body: IDataObject = {};
-					const payment_schedule_block_id = this.getNodeParameter('payment_schedule_block_id', i);
-					if (payment_schedule_block_id !== undefined && payment_schedule_block_id !== '') body['payment_schedule_block_id'] = payment_schedule_block_id;
-					const product_id = this.getNodeParameter('product_id', i, undefined);
-					if (product_id !== undefined && product_id !== '') body['product_id'] = product_id;
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const internal_code = this.getNodeParameter('internal_code', i, undefined);
-					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
-					const due_date = this.getNodeParameter('due_date', i);
-					if (due_date !== undefined && due_date !== '') body['due_date'] = due_date;
-					const amount = this.getNodeParameter('amount', i, undefined);
-					if (amount !== undefined && amount !== '') body['amount'] = amount;
-					const payment_integration_id = this.getNodeParameter('payment_integration_id', i, undefined);
-					if (payment_integration_id !== undefined && payment_integration_id !== '') body['payment_integration_id'] = payment_integration_id;
-					const show_sources = this.getNodeParameter('show_sources', i, undefined);
-					if (show_sources !== undefined && show_sources !== '') body['show_sources'] = show_sources;
+					body['payment_schedule_block_id'] = this.getNodeParameter('payment_schedule_block_id', i) as string | number | boolean;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					body['due_date'] = this.getNodeParameter('due_date', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1161,20 +1282,7 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'payment' && operation === 'update') {
 					const payment_id = this.getNodeParameter('payment_id', i) as string;
 					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i, undefined);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const internal_code = this.getNodeParameter('internal_code', i, undefined);
-					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
-					const due_date = this.getNodeParameter('due_date', i, undefined);
-					if (due_date !== undefined && due_date !== '') body['due_date'] = due_date;
-					const amount = this.getNodeParameter('amount', i, undefined);
-					if (amount !== undefined && amount !== '') body['amount'] = amount;
-					const product_id = this.getNodeParameter('product_id', i, undefined);
-					if (product_id !== undefined && product_id !== '') body['product_id'] = product_id;
-					const payment_integration_id = this.getNodeParameter('payment_integration_id', i, undefined);
-					if (payment_integration_id !== undefined && payment_integration_id !== '') body['payment_integration_id'] = payment_integration_id;
-					const show_sources = this.getNodeParameter('show_sources', i, undefined);
-					if (show_sources !== undefined && show_sources !== '') body['show_sources'] = show_sources;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1189,10 +1297,8 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'payment' && operation === 'mark_paid') {
 					const payment_id = this.getNodeParameter('payment_id', i) as string;
 					const body: IDataObject = {};
-					const paid_date = this.getNodeParameter('paid_date', i);
-					if (paid_date !== undefined && paid_date !== '') body['paid_date'] = paid_date;
-					const payment_integration_id = this.getNodeParameter('payment_integration_id', i, undefined);
-					if (payment_integration_id !== undefined && payment_integration_id !== '') body['payment_integration_id'] = payment_integration_id;
+					body['paid_date'] = this.getNodeParameter('paid_date', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1231,12 +1337,15 @@ export class Proiectro implements INodeType {
 					)) as IDataObject;
 
 				} else if (resource === 'supportRequest' && operation === 'list') {
+					const qs: IDataObject = {};
+					Object.assign(qs, this.getNodeParameter('filters', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
 						{
 							method: 'GET',
 							url: `${apiBase}/internal_support_requests`,
+							qs,
 							json: true,
 						},
 					)) as IDataObject;
@@ -1255,14 +1364,10 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'supportRequest' && operation === 'create') {
 					const body: IDataObject = {};
-					const request_type = this.getNodeParameter('request_type', i);
-					if (request_type !== undefined && request_type !== '') body['request_type'] = request_type;
-					const request_severity = this.getNodeParameter('request_severity', i);
-					if (request_severity !== undefined && request_severity !== '') body['request_severity'] = request_severity;
-					const title = this.getNodeParameter('title', i);
-					if (title !== undefined && title !== '') body['title'] = title;
-					const description = this.getNodeParameter('description', i);
-					if (description !== undefined && description !== '') body['description'] = description;
+					body['request_type'] = this.getNodeParameter('request_type', i) as string | number | boolean;
+					body['request_severity'] = this.getNodeParameter('request_severity', i) as string | number | boolean;
+					body['title'] = this.getNodeParameter('title', i) as string | number | boolean;
+					body['description'] = this.getNodeParameter('description', i) as string | number | boolean;
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1277,16 +1382,11 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'supportRequest' && operation === 'edit') {
 					const support_request_id = this.getNodeParameter('support_request_id', i) as string;
 					const body: IDataObject = {};
-					const title = this.getNodeParameter('title', i);
-					if (title !== undefined && title !== '') body['title'] = title;
-					const description = this.getNodeParameter('description', i);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const request_type = this.getNodeParameter('request_type', i);
-					if (request_type !== undefined && request_type !== '') body['request_type'] = request_type;
-					const request_severity = this.getNodeParameter('request_severity', i);
-					if (request_severity !== undefined && request_severity !== '') body['request_severity'] = request_severity;
-					const root_cause_asset = this.getNodeParameter('root_cause_asset', i, undefined);
-					if (root_cause_asset !== undefined && root_cause_asset !== '') body['root_cause_asset'] = root_cause_asset;
+					body['title'] = this.getNodeParameter('title', i) as string | number | boolean;
+					body['description'] = this.getNodeParameter('description', i) as string | number | boolean;
+					body['request_type'] = this.getNodeParameter('request_type', i) as string | number | boolean;
+					body['request_severity'] = this.getNodeParameter('request_severity', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1301,12 +1401,9 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'supportRequest' && operation === 'close') {
 					const support_request_id = this.getNodeParameter('support_request_id', i) as string;
 					const body: IDataObject = {};
-					const status_id = this.getNodeParameter('status_id', i);
-					if (status_id !== undefined && status_id !== '') body['status_id'] = status_id;
-					const resolution = this.getNodeParameter('resolution', i);
-					if (resolution !== undefined && resolution !== '') body['resolution'] = resolution;
-					const reason = this.getNodeParameter('reason', i);
-					if (reason !== undefined && reason !== '') body['reason'] = reason;
+					body['status_id'] = this.getNodeParameter('status_id', i) as string | number | boolean;
+					body['resolution'] = this.getNodeParameter('resolution', i) as string | number | boolean;
+					body['reason'] = this.getNodeParameter('reason', i) as string | number | boolean;
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1335,10 +1432,8 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'supportRequest' && operation === 'change_status') {
 					const support_request_id = this.getNodeParameter('support_request_id', i) as string;
 					const body: IDataObject = {};
-					const status_id = this.getNodeParameter('status_id', i);
-					if (status_id !== undefined && status_id !== '') body['status_id'] = status_id;
-					const reason = this.getNodeParameter('reason', i);
-					if (reason !== undefined && reason !== '') body['reason'] = reason;
+					body['status_id'] = this.getNodeParameter('status_id', i) as string | number | boolean;
+					body['reason'] = this.getNodeParameter('reason', i) as string | number | boolean;
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1353,8 +1448,7 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'supportRequest' && operation === 'reassign') {
 					const support_request_id = this.getNodeParameter('support_request_id', i) as string;
 					const body: IDataObject = {};
-					const assignee_id = this.getNodeParameter('assignee_id', i);
-					if (assignee_id !== undefined && assignee_id !== '') body['assignee_id'] = assignee_id;
+					body['assignee_id'] = this.getNodeParameter('assignee_id', i) as string | number | boolean;
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1368,12 +1462,9 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'supportRequest' && operation === 'add_comment') {
 					const body: IDataObject = {};
-					const support_request_id = this.getNodeParameter('support_request_id', i);
-					if (support_request_id !== undefined && support_request_id !== '') body['support_request_id'] = support_request_id;
-					const content = this.getNodeParameter('content', i);
-					if (content !== undefined && content !== '') body['content'] = content;
-					const parent_id = this.getNodeParameter('parent_id', i, undefined);
-					if (parent_id !== undefined && parent_id !== '') body['parent_id'] = parent_id;
+					body['support_request_id'] = this.getNodeParameter('support_request_id', i) as string | number | boolean;
+					body['content'] = this.getNodeParameter('content', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1386,31 +1477,36 @@ export class Proiectro implements INodeType {
 					)) as IDataObject;
 
 				} else if (resource === 'supportRequest' && operation === 'my_assigned') {
+					const qs: IDataObject = {};
+					Object.assign(qs, this.getNodeParameter('filters', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
 						{
 							method: 'GET',
 							url: `${apiBase}/assigned_internal_support_requests`,
+							qs,
 							json: true,
 						},
 					)) as IDataObject;
 
 				} else if (resource === 'teamMember' && operation === 'list') {
+					const qs: IDataObject = {};
+					Object.assign(qs, this.getNodeParameter('filters', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
 						{
 							method: 'GET',
 							url: `${apiBase}/team`,
+							qs,
 							json: true,
 						},
 					)) as IDataObject;
 
 				} else if (resource === 'teamMember' && operation === 'invite') {
 					const body: IDataObject = {};
-					const email = this.getNodeParameter('email', i);
-					if (email !== undefined && email !== '') body['email'] = email;
+					body['email'] = this.getNodeParameter('email', i) as string | number | boolean;
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1425,18 +1521,8 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'teamMember' && operation === 'edit') {
 					const member_id = this.getNodeParameter('member_id', i) as string;
 					const body: IDataObject = {};
-					const nickname = this.getNodeParameter('nickname', i);
-					if (nickname !== undefined && nickname !== '') body['nickname'] = nickname;
-					const work_email = this.getNodeParameter('work_email', i, undefined);
-					if (work_email !== undefined && work_email !== '') body['work_email'] = work_email;
-					const work_email_alternative = this.getNodeParameter('work_email_alternative', i, undefined);
-					if (work_email_alternative !== undefined && work_email_alternative !== '') body['work_email_alternative'] = work_email_alternative;
-					const work_phone = this.getNodeParameter('work_phone', i, undefined);
-					if (work_phone !== undefined && work_phone !== '') body['work_phone'] = work_phone;
-					const work_phone_alternative = this.getNodeParameter('work_phone_alternative', i, undefined);
-					if (work_phone_alternative !== undefined && work_phone_alternative !== '') body['work_phone_alternative'] = work_phone_alternative;
-					const territory = this.getNodeParameter('territory', i, undefined);
-					if (territory !== undefined && territory !== '') body['territory'] = territory;
+					body['nickname'] = this.getNodeParameter('nickname', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1473,10 +1559,8 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'tag' && operation === 'create') {
 					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const color = this.getNodeParameter('color', i);
-					if (color !== undefined && color !== '') body['color'] = color;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					body['color'] = this.getNodeParameter('color', i) as string | number | boolean;
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1484,36 +1568,6 @@ export class Proiectro implements INodeType {
 							method: 'POST',
 							url: `${apiBase}/add_tag`,
 							body,
-							json: true,
-						},
-					)) as IDataObject;
-
-				} else if (resource === 'tag' && operation === 'update') {
-					const tag_id = this.getNodeParameter('tag_id', i) as string;
-					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const color = this.getNodeParameter('color', i);
-					if (color !== undefined && color !== '') body['color'] = color;
-					responseData = (await this.helpers.httpRequestWithAuthentication.call(
-						this,
-						'proiectroApi',
-						{
-							method: 'PATCH',
-							url: `${apiBase}/edit_tag/${tag_id}`,
-							body,
-							json: true,
-						},
-					)) as IDataObject;
-
-				} else if (resource === 'tag' && operation === 'delete') {
-					const tag_id = this.getNodeParameter('tag_id', i) as string;
-					responseData = (await this.helpers.httpRequestWithAuthentication.call(
-						this,
-						'proiectroApi',
-						{
-							method: 'DELETE',
-							url: `${apiBase}/delete_tag/${tag_id}`,
 							json: true,
 						},
 					)) as IDataObject;
@@ -1686,6 +1740,62 @@ export class Proiectro implements INodeType {
 						},
 					)) as IDataObject;
 
+				} else if (resource === 'tag' && operation === 'tag_document') {
+					const document_id = this.getNodeParameter('document_id', i) as string;
+					const tag_id = this.getNodeParameter('tag_id', i) as string;
+					const body: IDataObject = {};
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/tag_document/${document_id}/${tag_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'tag' && operation === 'untag_document') {
+					const document_id = this.getNodeParameter('document_id', i) as string;
+					const tag_id = this.getNodeParameter('tag_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'DELETE',
+							url: `${apiBase}/untag_document/${document_id}/${tag_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'tag' && operation === 'tag_lead') {
+					const lead_id = this.getNodeParameter('lead_id', i) as string;
+					const tag_id = this.getNodeParameter('tag_id', i) as string;
+					const body: IDataObject = {};
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/tag_lead/${lead_id}/${tag_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'tag' && operation === 'untag_lead') {
+					const lead_id = this.getNodeParameter('lead_id', i) as string;
+					const tag_id = this.getNodeParameter('tag_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'DELETE',
+							url: `${apiBase}/untag_lead/${lead_id}/${tag_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
 				} else if (resource === 'label' && operation === 'list') {
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
@@ -1699,10 +1809,8 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'label' && operation === 'create') {
 					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const label_type = this.getNodeParameter('label_type', i, undefined);
-					if (label_type !== undefined && label_type !== '') body['label_type'] = label_type;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1714,48 +1822,11 @@ export class Proiectro implements INodeType {
 						},
 					)) as IDataObject;
 
-				} else if (resource === 'label' && operation === 'update') {
-					const label_id = this.getNodeParameter('label_id', i) as string;
-					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					responseData = (await this.helpers.httpRequestWithAuthentication.call(
-						this,
-						'proiectroApi',
-						{
-							method: 'PATCH',
-							url: `${apiBase}/edit_label/${label_id}`,
-							body,
-							json: true,
-						},
-					)) as IDataObject;
-
-				} else if (resource === 'label' && operation === 'delete') {
-					const label_id = this.getNodeParameter('label_id', i) as string;
-					responseData = (await this.helpers.httpRequestWithAuthentication.call(
-						this,
-						'proiectroApi',
-						{
-							method: 'DELETE',
-							url: `${apiBase}/delete_label/${label_id}`,
-							json: true,
-						},
-					)) as IDataObject;
-
 				} else if (resource === 'label' && operation === 'label_customer') {
 					const body: IDataObject = {};
-					const org = this.getNodeParameter('org', i);
-					if (org !== undefined && org !== '') body['org'] = org;
-					const label = this.getNodeParameter('label', i);
-					if (label !== undefined && label !== '') body['label'] = label;
-					const value_text = this.getNodeParameter('value_text', i, undefined);
-					if (value_text !== undefined && value_text !== '') body['value_text'] = value_text;
-					const value_integer = this.getNodeParameter('value_integer', i, undefined);
-					if (value_integer !== undefined && value_integer !== '') body['value_integer'] = value_integer;
-					const value_decimal = this.getNodeParameter('value_decimal', i, undefined);
-					if (value_decimal !== undefined && value_decimal !== '') body['value_decimal'] = value_decimal;
-					const value_date = this.getNodeParameter('value_date', i, undefined);
-					if (value_date !== undefined && value_date !== '') body['value_date'] = value_date;
+					body['org'] = this.getNodeParameter('org', i) as string | number | boolean;
+					body['label'] = this.getNodeParameter('label', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1782,18 +1853,9 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'label' && operation === 'label_member') {
 					const body: IDataObject = {};
-					const team = this.getNodeParameter('team', i);
-					if (team !== undefined && team !== '') body['team'] = team;
-					const label = this.getNodeParameter('label', i);
-					if (label !== undefined && label !== '') body['label'] = label;
-					const value_text = this.getNodeParameter('value_text', i, undefined);
-					if (value_text !== undefined && value_text !== '') body['value_text'] = value_text;
-					const value_integer = this.getNodeParameter('value_integer', i, undefined);
-					if (value_integer !== undefined && value_integer !== '') body['value_integer'] = value_integer;
-					const value_decimal = this.getNodeParameter('value_decimal', i, undefined);
-					if (value_decimal !== undefined && value_decimal !== '') body['value_decimal'] = value_decimal;
-					const value_date = this.getNodeParameter('value_date', i, undefined);
-					if (value_date !== undefined && value_date !== '') body['value_date'] = value_date;
+					body['team'] = this.getNodeParameter('team', i) as string | number | boolean;
+					body['label'] = this.getNodeParameter('label', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1820,18 +1882,9 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'label' && operation === 'label_resource') {
 					const body: IDataObject = {};
-					const resource = this.getNodeParameter('resource', i);
-					if (resource !== undefined && resource !== '') body['resource'] = resource;
-					const label = this.getNodeParameter('label', i);
-					if (label !== undefined && label !== '') body['label'] = label;
-					const value_text = this.getNodeParameter('value_text', i, undefined);
-					if (value_text !== undefined && value_text !== '') body['value_text'] = value_text;
-					const value_integer = this.getNodeParameter('value_integer', i, undefined);
-					if (value_integer !== undefined && value_integer !== '') body['value_integer'] = value_integer;
-					const value_decimal = this.getNodeParameter('value_decimal', i, undefined);
-					if (value_decimal !== undefined && value_decimal !== '') body['value_decimal'] = value_decimal;
-					const value_date = this.getNodeParameter('value_date', i, undefined);
-					if (value_date !== undefined && value_date !== '') body['value_date'] = value_date;
+					body['resource'] = this.getNodeParameter('resource', i) as string | number | boolean;
+					body['label'] = this.getNodeParameter('label', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1858,18 +1911,9 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'label' && operation === 'label_proposal') {
 					const body: IDataObject = {};
-					const proposal = this.getNodeParameter('proposal', i);
-					if (proposal !== undefined && proposal !== '') body['proposal'] = proposal;
-					const label = this.getNodeParameter('label', i);
-					if (label !== undefined && label !== '') body['label'] = label;
-					const value_text = this.getNodeParameter('value_text', i, undefined);
-					if (value_text !== undefined && value_text !== '') body['value_text'] = value_text;
-					const value_integer = this.getNodeParameter('value_integer', i, undefined);
-					if (value_integer !== undefined && value_integer !== '') body['value_integer'] = value_integer;
-					const value_decimal = this.getNodeParameter('value_decimal', i, undefined);
-					if (value_decimal !== undefined && value_decimal !== '') body['value_decimal'] = value_decimal;
-					const value_date = this.getNodeParameter('value_date', i, undefined);
-					if (value_date !== undefined && value_date !== '') body['value_date'] = value_date;
+					body['proposal'] = this.getNodeParameter('proposal', i) as string | number | boolean;
+					body['label'] = this.getNodeParameter('label', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1896,18 +1940,9 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'label' && operation === 'label_work_item') {
 					const body: IDataObject = {};
-					const work_item = this.getNodeParameter('work_item', i);
-					if (work_item !== undefined && work_item !== '') body['work_item'] = work_item;
-					const label = this.getNodeParameter('label', i);
-					if (label !== undefined && label !== '') body['label'] = label;
-					const value_text = this.getNodeParameter('value_text', i, undefined);
-					if (value_text !== undefined && value_text !== '') body['value_text'] = value_text;
-					const value_integer = this.getNodeParameter('value_integer', i, undefined);
-					if (value_integer !== undefined && value_integer !== '') body['value_integer'] = value_integer;
-					const value_decimal = this.getNodeParameter('value_decimal', i, undefined);
-					if (value_decimal !== undefined && value_decimal !== '') body['value_decimal'] = value_decimal;
-					const value_date = this.getNodeParameter('value_date', i, undefined);
-					if (value_date !== undefined && value_date !== '') body['value_date'] = value_date;
+					body['work_item'] = this.getNodeParameter('work_item', i) as string | number | boolean;
+					body['label'] = this.getNodeParameter('label', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1934,18 +1969,9 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'label' && operation === 'label_operational_item') {
 					const body: IDataObject = {};
-					const operational_work_item = this.getNodeParameter('operational_work_item', i);
-					if (operational_work_item !== undefined && operational_work_item !== '') body['operational_work_item'] = operational_work_item;
-					const label = this.getNodeParameter('label', i);
-					if (label !== undefined && label !== '') body['label'] = label;
-					const value_text = this.getNodeParameter('value_text', i, undefined);
-					if (value_text !== undefined && value_text !== '') body['value_text'] = value_text;
-					const value_integer = this.getNodeParameter('value_integer', i, undefined);
-					if (value_integer !== undefined && value_integer !== '') body['value_integer'] = value_integer;
-					const value_decimal = this.getNodeParameter('value_decimal', i, undefined);
-					if (value_decimal !== undefined && value_decimal !== '') body['value_decimal'] = value_decimal;
-					const value_date = this.getNodeParameter('value_date', i, undefined);
-					if (value_date !== undefined && value_date !== '') body['value_date'] = value_date;
+					body['operational_work_item'] = this.getNodeParameter('operational_work_item', i) as string | number | boolean;
+					body['label'] = this.getNodeParameter('label', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1970,29 +1996,84 @@ export class Proiectro implements INodeType {
 						},
 					)) as IDataObject;
 
+				} else if (resource === 'label' && operation === 'label_document') {
+					const body: IDataObject = {};
+					body['document'] = this.getNodeParameter('document', i) as string | number | boolean;
+					body['label'] = this.getNodeParameter('label', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/label_document`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'label' && operation === 'unlabel_document') {
+					const document_id = this.getNodeParameter('document_id', i) as string;
+					const label_id = this.getNodeParameter('label_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'DELETE',
+							url: `${apiBase}/unlabel_document/${document_id}/${label_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'label' && operation === 'label_lead') {
+					const body: IDataObject = {};
+					body['lead'] = this.getNodeParameter('lead', i) as string | number | boolean;
+					body['label'] = this.getNodeParameter('label', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/label_lead`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'label' && operation === 'unlabel_lead') {
+					const lead_id = this.getNodeParameter('lead_id', i) as string;
+					const label_id = this.getNodeParameter('label_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'DELETE',
+							url: `${apiBase}/unlabel_lead/${lead_id}/${label_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
 				} else if (resource === 'resource' && operation === 'list') {
+					const qs: IDataObject = {};
+					Object.assign(qs, this.getNodeParameter('filters', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
 						{
 							method: 'GET',
 							url: `${apiBase}/resource_types`,
+							qs,
 							json: true,
 						},
 					)) as IDataObject;
 
 				} else if (resource === 'resource' && operation === 'create') {
 					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const internal_code = this.getNodeParameter('internal_code', i, undefined);
-					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
-					const description = this.getNodeParameter('description', i);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const parent = this.getNodeParameter('parent', i, undefined);
-					if (parent !== undefined && parent !== '') body['parent'] = parent;
-					const timezone = this.getNodeParameter('timezone', i);
-					if (timezone !== undefined && timezone !== '') body['timezone'] = timezone;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					body['description'] = this.getNodeParameter('description', i) as string | number | boolean;
+					body['timezone'] = this.getNodeParameter('timezone', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -2007,16 +2088,10 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'resource' && operation === 'update') {
 					const resource_id = this.getNodeParameter('resource_id', i) as string;
 					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const internal_code = this.getNodeParameter('internal_code', i, undefined);
-					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
-					const description = this.getNodeParameter('description', i);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const parent = this.getNodeParameter('parent', i, undefined);
-					if (parent !== undefined && parent !== '') body['parent'] = parent;
-					const timezone = this.getNodeParameter('timezone', i);
-					if (timezone !== undefined && timezone !== '') body['timezone'] = timezone;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					body['description'] = this.getNodeParameter('description', i) as string | number | boolean;
+					body['timezone'] = this.getNodeParameter('timezone', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -2030,12 +2105,22 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'resource' && operation === 'delete') {
 					const resource_id = this.getNodeParameter('resource_id', i) as string;
+					const qs: IDataObject = {};
+					{
+						const value = this.getNodeParameter('delete_descendants', i, undefined);
+						if (value !== undefined && value !== '') qs['delete_descendants'] = value as string | number | boolean;
+					}
+					{
+						const value = this.getNodeParameter('reparent_id', i, undefined);
+						if (value !== undefined && value !== '') qs['reparent_id'] = value as string | number | boolean;
+					}
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
 						{
 							method: 'DELETE',
 							url: `${apiBase}/delete_resource/${resource_id}`,
+							qs,
 							json: true,
 						},
 					)) as IDataObject;
@@ -2063,133 +2148,6 @@ export class Proiectro implements INodeType {
 						},
 					)) as IDataObject;
 
-				} else if (resource === 'processDefinition' && operation === 'create') {
-					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const description = this.getNodeParameter('description', i, undefined);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const allow_backward_move = this.getNodeParameter('allow_backward_move', i, undefined);
-					if (allow_backward_move !== undefined && allow_backward_move !== '') body['allow_backward_move'] = allow_backward_move;
-					const allow_skip_move = this.getNodeParameter('allow_skip_move', i, undefined);
-					if (allow_skip_move !== undefined && allow_skip_move !== '') body['allow_skip_move'] = allow_skip_move;
-					responseData = (await this.helpers.httpRequestWithAuthentication.call(
-						this,
-						'proiectroApi',
-						{
-							method: 'POST',
-							url: `${apiBase}/process_definition`,
-							body,
-							json: true,
-						},
-					)) as IDataObject;
-
-				} else if (resource === 'processDefinition' && operation === 'update') {
-					const process_id = this.getNodeParameter('process_id', i) as string;
-					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const description = this.getNodeParameter('description', i, undefined);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const is_active = this.getNodeParameter('is_active', i, undefined);
-					if (is_active !== undefined && is_active !== '') body['is_active'] = is_active;
-					const allow_backward_move = this.getNodeParameter('allow_backward_move', i, undefined);
-					if (allow_backward_move !== undefined && allow_backward_move !== '') body['allow_backward_move'] = allow_backward_move;
-					const allow_skip_move = this.getNodeParameter('allow_skip_move', i, undefined);
-					if (allow_skip_move !== undefined && allow_skip_move !== '') body['allow_skip_move'] = allow_skip_move;
-					responseData = (await this.helpers.httpRequestWithAuthentication.call(
-						this,
-						'proiectroApi',
-						{
-							method: 'PATCH',
-							url: `${apiBase}/process_definition/${process_id}`,
-							body,
-							json: true,
-						},
-					)) as IDataObject;
-
-				} else if (resource === 'processDefinition' && operation === 'delete') {
-					const process_id = this.getNodeParameter('process_id', i) as string;
-					responseData = (await this.helpers.httpRequestWithAuthentication.call(
-						this,
-						'proiectroApi',
-						{
-							method: 'DELETE',
-							url: `${apiBase}/process_definition/${process_id}`,
-							json: true,
-						},
-					)) as IDataObject;
-
-				} else if (resource === 'webhook' && operation === 'list') {
-					responseData = (await this.helpers.httpRequestWithAuthentication.call(
-						this,
-						'proiectroApi',
-						{
-							method: 'GET',
-							url: `${apiBase}/webhooks`,
-							json: true,
-						},
-					)) as IDataObject;
-
-				} else if (resource === 'webhook' && operation === 'create') {
-					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const target_url = this.getNodeParameter('target_url', i);
-					if (target_url !== undefined && target_url !== '') body['target_url'] = target_url;
-					const event_types = this.getNodeParameter('event_types', i, undefined);
-					if (event_types !== undefined && event_types !== '') body['event_types'] = event_types;
-					const is_active = this.getNodeParameter('is_active', i, undefined);
-					if (is_active !== undefined && is_active !== '') body['is_active'] = is_active;
-					const is_secure = this.getNodeParameter('is_secure', i, undefined);
-					if (is_secure !== undefined && is_secure !== '') body['is_secure'] = is_secure;
-					responseData = (await this.helpers.httpRequestWithAuthentication.call(
-						this,
-						'proiectroApi',
-						{
-							method: 'POST',
-							url: `${apiBase}/add_webhook`,
-							body,
-							json: true,
-						},
-					)) as IDataObject;
-
-				} else if (resource === 'webhook' && operation === 'update') {
-					const webhook_id = this.getNodeParameter('webhook_id', i) as string;
-					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i, undefined);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const target_url = this.getNodeParameter('target_url', i, undefined);
-					if (target_url !== undefined && target_url !== '') body['target_url'] = target_url;
-					const event_types = this.getNodeParameter('event_types', i, undefined);
-					if (event_types !== undefined && event_types !== '') body['event_types'] = event_types;
-					const is_active = this.getNodeParameter('is_active', i, undefined);
-					if (is_active !== undefined && is_active !== '') body['is_active'] = is_active;
-					const is_secure = this.getNodeParameter('is_secure', i, undefined);
-					if (is_secure !== undefined && is_secure !== '') body['is_secure'] = is_secure;
-					responseData = (await this.helpers.httpRequestWithAuthentication.call(
-						this,
-						'proiectroApi',
-						{
-							method: 'PATCH',
-							url: `${apiBase}/edit_webhook/${webhook_id}`,
-							body,
-							json: true,
-						},
-					)) as IDataObject;
-
-				} else if (resource === 'webhook' && operation === 'delete') {
-					const webhook_id = this.getNodeParameter('webhook_id', i) as string;
-					responseData = (await this.helpers.httpRequestWithAuthentication.call(
-						this,
-						'proiectroApi',
-						{
-							method: 'DELETE',
-							url: `${apiBase}/delete_webhook/${webhook_id}`,
-							json: true,
-						},
-					)) as IDataObject;
-
 				} else if (resource === 'location' && operation === 'list') {
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
@@ -2203,22 +2161,8 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'location' && operation === 'create') {
 					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const description = this.getNodeParameter('description', i, undefined);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const internal_code = this.getNodeParameter('internal_code', i, undefined);
-					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
-					const country = this.getNodeParameter('country', i, undefined);
-					if (country !== undefined && country !== '') body['country'] = country;
-					const parent = this.getNodeParameter('parent', i, undefined);
-					if (parent !== undefined && parent !== '') body['parent'] = parent;
-					const is_active = this.getNodeParameter('is_active', i, undefined);
-					if (is_active !== undefined && is_active !== '') body['is_active'] = is_active;
-					const latitude = this.getNodeParameter('latitude', i, undefined);
-					if (latitude !== undefined && latitude !== '') body['latitude'] = latitude;
-					const longitude = this.getNodeParameter('longitude', i, undefined);
-					if (longitude !== undefined && longitude !== '') body['longitude'] = longitude;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -2233,22 +2177,8 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'location' && operation === 'update') {
 					const location_id = this.getNodeParameter('location_id', i) as string;
 					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const description = this.getNodeParameter('description', i, undefined);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const internal_code = this.getNodeParameter('internal_code', i, undefined);
-					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
-					const country = this.getNodeParameter('country', i, undefined);
-					if (country !== undefined && country !== '') body['country'] = country;
-					const parent = this.getNodeParameter('parent', i, undefined);
-					if (parent !== undefined && parent !== '') body['parent'] = parent;
-					const is_active = this.getNodeParameter('is_active', i, undefined);
-					if (is_active !== undefined && is_active !== '') body['is_active'] = is_active;
-					const latitude = this.getNodeParameter('latitude', i, undefined);
-					if (latitude !== undefined && latitude !== '') body['latitude'] = latitude;
-					const longitude = this.getNodeParameter('longitude', i, undefined);
-					if (longitude !== undefined && longitude !== '') body['longitude'] = longitude;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -2262,12 +2192,22 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'location' && operation === 'delete') {
 					const location_id = this.getNodeParameter('location_id', i) as string;
+					const qs: IDataObject = {};
+					{
+						const value = this.getNodeParameter('delete_descendants', i, undefined);
+						if (value !== undefined && value !== '') qs['delete_descendants'] = value as string | number | boolean;
+					}
+					{
+						const value = this.getNodeParameter('reparent_id', i, undefined);
+						if (value !== undefined && value !== '') qs['reparent_id'] = value as string | number | boolean;
+					}
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
 						{
 							method: 'DELETE',
 							url: `${apiBase}/delete_location/${location_id}`,
+							qs,
 							json: true,
 						},
 					)) as IDataObject;
@@ -2286,18 +2226,10 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'customerLocation' && operation === 'create') {
 					const body: IDataObject = {};
-					const customer = this.getNodeParameter('customer', i);
-					if (customer !== undefined && customer !== '') body['customer'] = customer;
-					const location = this.getNodeParameter('location', i);
-					if (location !== undefined && location !== '') body['location'] = location;
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const description = this.getNodeParameter('description', i, undefined);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const internal_code = this.getNodeParameter('internal_code', i, undefined);
-					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
-					const is_active = this.getNodeParameter('is_active', i, undefined);
-					if (is_active !== undefined && is_active !== '') body['is_active'] = is_active;
+					body['customer'] = this.getNodeParameter('customer', i) as string | number | boolean;
+					body['location'] = this.getNodeParameter('location', i) as string | number | boolean;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -2312,16 +2244,9 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'customerLocation' && operation === 'update') {
 					const customer_location_id = this.getNodeParameter('customer_location_id', i) as string;
 					const body: IDataObject = {};
-					const location = this.getNodeParameter('location', i);
-					if (location !== undefined && location !== '') body['location'] = location;
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const description = this.getNodeParameter('description', i, undefined);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const internal_code = this.getNodeParameter('internal_code', i, undefined);
-					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
-					const is_active = this.getNodeParameter('is_active', i, undefined);
-					if (is_active !== undefined && is_active !== '') body['is_active'] = is_active;
+					body['location'] = this.getNodeParameter('location', i) as string | number | boolean;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -2359,34 +2284,10 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'customerAsset' && operation === 'create') {
 					const body: IDataObject = {};
-					const customer = this.getNodeParameter('customer', i);
-					if (customer !== undefined && customer !== '') body['customer'] = customer;
-					const category = this.getNodeParameter('category', i);
-					if (category !== undefined && category !== '') body['category'] = category;
-					const customer_location = this.getNodeParameter('customer_location', i, undefined);
-					if (customer_location !== undefined && customer_location !== '') body['customer_location'] = customer_location;
-					const project = this.getNodeParameter('project', i, undefined);
-					if (project !== undefined && project !== '') body['project'] = project;
-					const product = this.getNodeParameter('product', i, undefined);
-					if (product !== undefined && product !== '') body['product'] = product;
-					const parent = this.getNodeParameter('parent', i, undefined);
-					if (parent !== undefined && parent !== '') body['parent'] = parent;
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const description = this.getNodeParameter('description', i, undefined);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const internal_code = this.getNodeParameter('internal_code', i, undefined);
-					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
-					const serial_number_or_uri = this.getNodeParameter('serial_number_or_uri', i, undefined);
-					if (serial_number_or_uri !== undefined && serial_number_or_uri !== '') body['serial_number_or_uri'] = serial_number_or_uri;
-					const status = this.getNodeParameter('status', i, undefined);
-					if (status !== undefined && status !== '') body['status'] = status;
-					const installation_date = this.getNodeParameter('installation_date', i, undefined);
-					if (installation_date !== undefined && installation_date !== '') body['installation_date'] = installation_date;
-					const warranty_expiration = this.getNodeParameter('warranty_expiration', i, undefined);
-					if (warranty_expiration !== undefined && warranty_expiration !== '') body['warranty_expiration'] = warranty_expiration;
-					const is_customer_visible = this.getNodeParameter('is_customer_visible', i, undefined);
-					if (is_customer_visible !== undefined && is_customer_visible !== '') body['is_customer_visible'] = is_customer_visible;
+					body['customer'] = this.getNodeParameter('customer', i) as string | number | boolean;
+					body['category'] = this.getNodeParameter('category', i) as string | number | boolean;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -2401,32 +2302,9 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'customerAsset' && operation === 'update') {
 					const asset_id = this.getNodeParameter('asset_id', i) as string;
 					const body: IDataObject = {};
-					const category = this.getNodeParameter('category', i);
-					if (category !== undefined && category !== '') body['category'] = category;
-					const customer_location = this.getNodeParameter('customer_location', i, undefined);
-					if (customer_location !== undefined && customer_location !== '') body['customer_location'] = customer_location;
-					const project = this.getNodeParameter('project', i, undefined);
-					if (project !== undefined && project !== '') body['project'] = project;
-					const product = this.getNodeParameter('product', i, undefined);
-					if (product !== undefined && product !== '') body['product'] = product;
-					const parent = this.getNodeParameter('parent', i, undefined);
-					if (parent !== undefined && parent !== '') body['parent'] = parent;
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const description = this.getNodeParameter('description', i, undefined);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const internal_code = this.getNodeParameter('internal_code', i, undefined);
-					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
-					const serial_number_or_uri = this.getNodeParameter('serial_number_or_uri', i, undefined);
-					if (serial_number_or_uri !== undefined && serial_number_or_uri !== '') body['serial_number_or_uri'] = serial_number_or_uri;
-					const status = this.getNodeParameter('status', i, undefined);
-					if (status !== undefined && status !== '') body['status'] = status;
-					const installation_date = this.getNodeParameter('installation_date', i, undefined);
-					if (installation_date !== undefined && installation_date !== '') body['installation_date'] = installation_date;
-					const warranty_expiration = this.getNodeParameter('warranty_expiration', i, undefined);
-					if (warranty_expiration !== undefined && warranty_expiration !== '') body['warranty_expiration'] = warranty_expiration;
-					const is_customer_visible = this.getNodeParameter('is_customer_visible', i, undefined);
-					if (is_customer_visible !== undefined && is_customer_visible !== '') body['is_customer_visible'] = is_customer_visible;
+					body['category'] = this.getNodeParameter('category', i) as string | number | boolean;
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -2440,12 +2318,22 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'customerAsset' && operation === 'delete') {
 					const asset_id = this.getNodeParameter('asset_id', i) as string;
+					const qs: IDataObject = {};
+					{
+						const value = this.getNodeParameter('delete_descendants', i, undefined);
+						if (value !== undefined && value !== '') qs['delete_descendants'] = value as string | number | boolean;
+					}
+					{
+						const value = this.getNodeParameter('reparent_id', i, undefined);
+						if (value !== undefined && value !== '') qs['reparent_id'] = value as string | number | boolean;
+					}
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
 						{
 							method: 'DELETE',
 							url: `${apiBase}/delete_customer_asset/${asset_id}`,
+							qs,
 							json: true,
 						},
 					)) as IDataObject;
@@ -2461,57 +2349,979 @@ export class Proiectro implements INodeType {
 						},
 					)) as IDataObject;
 
-				} else if (resource === 'assetCategory' && operation === 'create') {
+				} else if (resource === 'comment' && operation === 'list_work_item') {
+					const work_item_id = this.getNodeParameter('work_item_id', i) as string;
+					const page_number = this.getNodeParameter('page_number', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/work_item_comments/${work_item_id}/${page_number}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'comment' && operation === 'add_work_item') {
 					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const description = this.getNodeParameter('description', i, undefined);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const internal_code = this.getNodeParameter('internal_code', i, undefined);
-					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
-					const is_active = this.getNodeParameter('is_active', i, undefined);
-					if (is_active !== undefined && is_active !== '') body['is_active'] = is_active;
+					body['work_item_id'] = this.getNodeParameter('work_item_id', i) as string | number | boolean;
+					body['content'] = this.getNodeParameter('content', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
 						{
 							method: 'POST',
-							url: `${apiBase}/add_asset_category`,
+							url: `${apiBase}/work_item_comment`,
 							body,
 							json: true,
 						},
 					)) as IDataObject;
 
-				} else if (resource === 'assetCategory' && operation === 'update') {
-					const category_id = this.getNodeParameter('category_id', i) as string;
+				} else if (resource === 'comment' && operation === 'edit_work_item') {
+					const comment_id = this.getNodeParameter('comment_id', i) as string;
 					const body: IDataObject = {};
-					const name = this.getNodeParameter('name', i);
-					if (name !== undefined && name !== '') body['name'] = name;
-					const description = this.getNodeParameter('description', i, undefined);
-					if (description !== undefined && description !== '') body['description'] = description;
-					const internal_code = this.getNodeParameter('internal_code', i, undefined);
-					if (internal_code !== undefined && internal_code !== '') body['internal_code'] = internal_code;
-					const is_active = this.getNodeParameter('is_active', i, undefined);
-					if (is_active !== undefined && is_active !== '') body['is_active'] = is_active;
+					body['content'] = this.getNodeParameter('content', i) as string | number | boolean;
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
 						{
 							method: 'PATCH',
-							url: `${apiBase}/edit_asset_category/${category_id}`,
+							url: `${apiBase}/edit_work_item_comment/${comment_id}`,
 							body,
 							json: true,
 						},
 					)) as IDataObject;
 
-				} else if (resource === 'assetCategory' && operation === 'delete') {
-					const category_id = this.getNodeParameter('category_id', i) as string;
+				} else if (resource === 'comment' && operation === 'delete_work_item') {
+					const comment_id = this.getNodeParameter('comment_id', i) as string;
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
 						{
 							method: 'DELETE',
-							url: `${apiBase}/delete_asset_category/${category_id}`,
+							url: `${apiBase}/delete_work_item_comment/${comment_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'comment' && operation === 'list_operational') {
+					const item_id = this.getNodeParameter('item_id', i) as string;
+					const page_number = this.getNodeParameter('page_number', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/operational_work_item_comments/${item_id}/${page_number}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'comment' && operation === 'add_operational') {
+					const body: IDataObject = {};
+					body['operational_work_item_id'] = this.getNodeParameter('operational_work_item_id', i) as string | number | boolean;
+					body['content'] = this.getNodeParameter('content', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/operational_work_item_comment`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'comment' && operation === 'edit_operational') {
+					const comment_id = this.getNodeParameter('comment_id', i) as string;
+					const body: IDataObject = {};
+					body['content'] = this.getNodeParameter('content', i) as string | number | boolean;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PATCH',
+							url: `${apiBase}/edit_operational_work_item_comment/${comment_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'comment' && operation === 'delete_operational') {
+					const comment_id = this.getNodeParameter('comment_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'DELETE',
+							url: `${apiBase}/delete_operational_work_item_comment/${comment_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'lead' && operation === 'list') {
+					const qs: IDataObject = {};
+					Object.assign(qs, this.getNodeParameter('filters', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/all_leads`,
+							qs,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'lead' && operation === 'get') {
+					const lead_id = this.getNodeParameter('lead_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/lead/${lead_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'lead' && operation === 'create') {
+					const body: IDataObject = {};
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/add_lead`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'lead' && operation === 'update') {
+					const lead_id = this.getNodeParameter('lead_id', i) as string;
+					const body: IDataObject = {};
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					body['updated_at'] = this.getNodeParameter('updated_at', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PUT',
+							url: `${apiBase}/edit_lead/${lead_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'lead' && operation === 'delete') {
+					const lead_id = this.getNodeParameter('lead_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'DELETE',
+							url: `${apiBase}/delete_lead/${lead_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'lead' && operation === 'update_status') {
+					const lead_id = this.getNodeParameter('lead_id', i) as string;
+					const body: IDataObject = {};
+					body['status'] = this.getNodeParameter('status', i) as string | number | boolean;
+					body['updated_at'] = this.getNodeParameter('updated_at', i) as string | number | boolean;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/update_lead_status/${lead_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'lead' && operation === 'claim') {
+					const lead_id = this.getNodeParameter('lead_id', i) as string;
+					const body: IDataObject = {};
+					body['updated_at'] = this.getNodeParameter('updated_at', i) as string | number | boolean;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/claim_lead/${lead_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'lead' && operation === 'disqualify') {
+					const lead_id = this.getNodeParameter('lead_id', i) as string;
+					const body: IDataObject = {};
+					body['updated_at'] = this.getNodeParameter('updated_at', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/disqualify_lead/${lead_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'lead' && operation === 'reopen') {
+					const lead_id = this.getNodeParameter('lead_id', i) as string;
+					const body: IDataObject = {};
+					body['updated_at'] = this.getNodeParameter('updated_at', i) as string | number | boolean;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/reopen_lead/${lead_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'lead' && operation === 'reschedule') {
+					const lead_id = this.getNodeParameter('lead_id', i) as string;
+					const body: IDataObject = {};
+					body['updated_at'] = this.getNodeParameter('updated_at', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/reschedule_lead/${lead_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'lead' && operation === 'convert') {
+					const lead_id = this.getNodeParameter('lead_id', i) as string;
+					const body: IDataObject = {};
+					body['updated_at'] = this.getNodeParameter('updated_at', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/mark_lead_converted/${lead_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'lead' && operation === 'do_not_contact') {
+					const lead_id = this.getNodeParameter('lead_id', i) as string;
+					const body: IDataObject = {};
+					body['updated_at'] = this.getNodeParameter('updated_at', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/mark_lead_do_not_contact/${lead_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'lead' && operation === 'log_activity') {
+					const lead_id = this.getNodeParameter('lead_id', i) as string;
+					const body: IDataObject = {};
+					body['activity_type'] = this.getNodeParameter('activity_type', i) as string | number | boolean;
+					body['note'] = this.getNodeParameter('note', i) as string | number | boolean;
+					body['updated_at'] = this.getNodeParameter('updated_at', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/log_lead_activity/${lead_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'lead' && operation === 'list_activities') {
+					const lead_id = this.getNodeParameter('lead_id', i) as string;
+					const page_number = this.getNodeParameter('page_number', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/lead/${lead_id}/activities/${page_number}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'leadList' && operation === 'list') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/lead_lists`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'leadList' && operation === 'get') {
+					const lead_list_id = this.getNodeParameter('lead_list_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/lead_list/${lead_list_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'leadList' && operation === 'create') {
+					const body: IDataObject = {};
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/add_lead_list`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'leadList' && operation === 'update') {
+					const lead_list_id = this.getNodeParameter('lead_list_id', i) as string;
+					const body: IDataObject = {};
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					body['updated_at'] = this.getNodeParameter('updated_at', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PUT',
+							url: `${apiBase}/edit_lead_list/${lead_list_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'leadList' && operation === 'delete') {
+					const lead_list_id = this.getNodeParameter('lead_list_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'DELETE',
+							url: `${apiBase}/delete_lead_list/${lead_list_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'leadList' && operation === 'reassign') {
+					const lead_list_id = this.getNodeParameter('lead_list_id', i) as string;
+					const body: IDataObject = {};
+					body['updated_at'] = this.getNodeParameter('updated_at', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/reassign_lead_list/${lead_list_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'leadList' && operation === 'reassign_leads') {
+					const lead_list_id = this.getNodeParameter('lead_list_id', i) as string;
+					const body: IDataObject = {};
+					body['to_owner'] = this.getNodeParameter('to_owner', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/reassign_leads_in_list/${lead_list_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'document' && operation === 'list') {
+					const qs: IDataObject = {};
+					Object.assign(qs, this.getNodeParameter('filters', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/documents_list`,
+							qs,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'document' && operation === 'generate_proposal') {
+					const proposal_id = this.getNodeParameter('proposal_id', i) as string;
+					const body: IDataObject = {};
+					body['template_id'] = this.getNodeParameter('template_id', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/generate_proposal_document/${proposal_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'document' && operation === 'generate_customer') {
+					const org_id = this.getNodeParameter('org_id', i) as string;
+					const body: IDataObject = {};
+					body['template_id'] = this.getNodeParameter('template_id', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/generate_org_document/${org_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'document' && operation === 'generate_operational') {
+					const work_item_id = this.getNodeParameter('work_item_id', i) as string;
+					const body: IDataObject = {};
+					body['template_id'] = this.getNodeParameter('template_id', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/generate_operational_work_item_document/${work_item_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'document' && operation === 'generate_support') {
+					const support_request_id = this.getNodeParameter('support_request_id', i) as string;
+					const body: IDataObject = {};
+					body['template_id'] = this.getNodeParameter('template_id', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/generate_internal_support_request_document/${support_request_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'document' && operation === 'generate_external_support') {
+					const support_request_id = this.getNodeParameter('support_request_id', i) as string;
+					const body: IDataObject = {};
+					body['template_id'] = this.getNodeParameter('template_id', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/generate_external_support_request_document/${support_request_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'document' && operation === 'generate_location') {
+					const location_id = this.getNodeParameter('location_id', i) as string;
+					const body: IDataObject = {};
+					body['template_id'] = this.getNodeParameter('template_id', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/generate_location_document/${location_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'document' && operation === 'generate_asset') {
+					const asset_id = this.getNodeParameter('asset_id', i) as string;
+					const body: IDataObject = {};
+					body['template_id'] = this.getNodeParameter('template_id', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/generate_customer_asset_document/${asset_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'document' && operation === 'generate_general') {
+					const body: IDataObject = {};
+					body['template_id'] = this.getNodeParameter('template_id', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/generate_general_document`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'document' && operation === 'finalize') {
+					const document_id = this.getNodeParameter('document_id', i) as string;
+					const body: IDataObject = {};
+					body['series_id'] = this.getNodeParameter('series_id', i) as string | number | boolean;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/finalize_document/${document_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'document' && operation === 'update') {
+					const document_id = this.getNodeParameter('document_id', i) as string;
+					const body: IDataObject = {};
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PATCH',
+							url: `${apiBase}/edit_document/${document_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'document' && operation === 'delete') {
+					const document_id = this.getNodeParameter('document_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'DELETE',
+							url: `${apiBase}/delete_document/${document_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'timer' && operation === 'list') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/timers`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'timer' && operation === 'create') {
+					const body: IDataObject = {};
+					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/timer`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'timer' && operation === 'update') {
+					const timer_id = this.getNodeParameter('timer_id', i) as string;
+					const body: IDataObject = {};
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PATCH',
+							url: `${apiBase}/timer/${timer_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'timer' && operation === 'delete') {
+					const timer_id = this.getNodeParameter('timer_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'DELETE',
+							url: `${apiBase}/timer/${timer_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'customForm' && operation === 'list') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/custom_forms`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'customForm' && operation === 'get') {
+					const form_id = this.getNodeParameter('form_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/custom_form/${form_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'customForm' && operation === 'submit') {
+					const form_id = this.getNodeParameter('form_id', i) as string;
+					const body: IDataObject = {};
+					body['data'] = this.getNodeParameter('data', i) as string | number | boolean;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/submit_form/${form_id}`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'customForm' && operation === 'list_submissions') {
+					const form_id = this.getNodeParameter('form_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/form_submissions/${form_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'customForm' && operation === 'get_submission') {
+					const submission_id = this.getNodeParameter('submission_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/form_submission_detail/${submission_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'customForm' && operation === 'update_submission_status') {
+					const body: IDataObject = {};
+					body['submission_id'] = this.getNodeParameter('submission_id', i) as string | number | boolean;
+					body['status'] = this.getNodeParameter('status', i) as string | number | boolean;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/edit_submission_status`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'blocked_deliverables') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/blocked_deliverables`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'expiring_api_keys') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/expiring_api_keys`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'expiring_proposals') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/expiring_proposals`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'expiring_warranties') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/expiring_warranties`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'inactive_partnerships') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/inactive_partnerships`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'lead_pipeline_health') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/lead_pipeline_health`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'open_external_tickets') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/open_external_tickets`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'open_tickets') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/open_tickets`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'overdue_operational_items') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/overdue_operational_items`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'overdue_payments') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/overdue_payments`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'process_bottlenecks') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/process_bottlenecks`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'projects_at_risk') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/projects_at_risk`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'proposals_without_activity') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/proposals_without_activity`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'queue_health') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/queue_health`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'revenue_at_risk') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/revenue_at_risk`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'stale_operational_items') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/stale_operational_items`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'stale_proposals') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/stale_proposals`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'team_workload') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/team_workload`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'unassigned_items') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/unassigned_items`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'upcoming_payments') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/upcoming_payments`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'won_without_project_start') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/won_without_project_start`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'kpi' && operation === 'work_items_due') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/kpi/work_items_due`,
 							json: true,
 						},
 					)) as IDataObject;

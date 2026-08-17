@@ -17,16 +17,22 @@ export const labelOperations: INodeProperties[] = [
 				description: 'Create a new label',
 			},
 			{
-				name: 'Delete',
-				value: 'delete',
-				action: 'Delete a label',
-				description: 'Delete a label',
-			},
-			{
 				name: 'Label Customer',
 				value: 'label_customer',
 				action: 'Label a customer',
 				description: 'Attach a label to a customer',
+			},
+			{
+				name: 'Label Document',
+				value: 'label_document',
+				action: 'Label a document',
+				description: 'Attach a label (with an optional value) to a document',
+			},
+			{
+				name: 'Label Lead',
+				value: 'label_lead',
+				action: 'Label a lead',
+				description: 'Attach a label (with an optional value) to a lead',
 			},
 			{
 				name: 'Label Member',
@@ -71,6 +77,18 @@ export const labelOperations: INodeProperties[] = [
 				description: 'Remove a label from a customer',
 			},
 			{
+				name: 'Unlabel Document',
+				value: 'unlabel_document',
+				action: 'Unlabel a document',
+				description: 'Remove a label from a document',
+			},
+			{
+				name: 'Unlabel Lead',
+				value: 'unlabel_lead',
+				action: 'Unlabel a lead',
+				description: 'Remove a label from a lead',
+			},
+			{
 				name: 'Unlabel Member',
 				value: 'unlabel_member',
 				action: 'Unlabel a team member',
@@ -100,12 +118,6 @@ export const labelOperations: INodeProperties[] = [
 				action: 'Unlabel a work item',
 				description: 'Remove a label from a project work item',
 			},
-			{
-				name: 'Update',
-				value: 'update',
-				action: 'Update a label',
-				description: 'Update a label',
-			},
 		],
 		default: 'create',
 	},
@@ -121,44 +133,9 @@ export const labelFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['label'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Label Type',
-		name: 'label_type',
-		type: 'options',
-		options: [
-			{ name: 'Date', value: 'date' },
-			{ name: 'Decimal', value: 'decimal' },
-			{ name: 'Integer', value: 'integer' },
-			{ name: 'Text', value: 'text' },
-		],
-		default: 'text',
-		displayOptions: {
-			show: {
-				resource: ['label'],
 				operation: ["create"],
 			},
 		},
-	},
-	{
-		displayName: 'Label Name or ID',
-		name: 'label_id',
-		type: 'options',
-		required: true,
-		typeOptions: {
-			loadOptionsMethod: 'getLabels',
-		},
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['label'],
-				operation: ["update", "delete", "unlabel_customer", "unlabel_member", "unlabel_resource", "unlabel_proposal", "unlabel_work_item", "unlabel_operational_item"],
-			},
-		},
-		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
 		displayName: 'Org',
@@ -185,58 +162,10 @@ export const labelFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['label'],
-				operation: ["label_customer", "label_member", "label_resource", "label_proposal", "label_work_item", "label_operational_item"],
+				operation: ["label_customer", "label_member", "label_resource", "label_proposal", "label_work_item", "label_operational_item", "label_document", "label_lead"],
 			},
 		},
 		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-	},
-	{
-		displayName: 'Value Text',
-		name: 'value_text',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['label'],
-				operation: ["label_customer", "label_member", "label_resource", "label_proposal", "label_work_item", "label_operational_item"],
-			},
-		},
-	},
-	{
-		displayName: 'Value Integer',
-		name: 'value_integer',
-		type: 'number',
-		default: 0,
-		displayOptions: {
-			show: {
-				resource: ['label'],
-				operation: ["label_customer", "label_member", "label_resource", "label_proposal", "label_work_item", "label_operational_item"],
-			},
-		},
-	},
-	{
-		displayName: 'Value Decimal',
-		name: 'value_decimal',
-		type: 'number',
-		default: 0,
-		displayOptions: {
-			show: {
-				resource: ['label'],
-				operation: ["label_customer", "label_member", "label_resource", "label_proposal", "label_work_item", "label_operational_item"],
-			},
-		},
-	},
-	{
-		displayName: 'Value Date',
-		name: 'value_date',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['label'],
-				operation: ["label_customer", "label_member", "label_resource", "label_proposal", "label_work_item", "label_operational_item"],
-			},
-		},
 	},
 	{
 		displayName: 'Org Name or ID',
@@ -251,6 +180,23 @@ export const labelFields: INodeProperties[] = [
 			show: {
 				resource: ['label'],
 				operation: ["unlabel_customer"],
+			},
+		},
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+	},
+	{
+		displayName: 'Label Name or ID',
+		name: 'label_id',
+		type: 'options',
+		required: true,
+		typeOptions: {
+			loadOptionsMethod: 'getLabels',
+		},
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['label'],
+				operation: ["unlabel_customer", "unlabel_member", "unlabel_resource", "unlabel_proposal", "unlabel_work_item", "unlabel_operational_item", "unlabel_document", "unlabel_lead"],
 			},
 		},
 		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
@@ -379,5 +325,396 @@ export const labelFields: INodeProperties[] = [
 				operation: ["label_operational_item"],
 			},
 		},
+	},
+	{
+		displayName: 'Document',
+		name: 'document',
+		type: 'string',
+		required: true,
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['label'],
+				operation: ["label_document"],
+			},
+		},
+	},
+	{
+		displayName: 'Document ID',
+		name: 'document_id',
+		type: 'string',
+		required: true,
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['label'],
+				operation: ["unlabel_document"],
+			},
+		},
+	},
+	{
+		displayName: 'Lead',
+		name: 'lead',
+		type: 'string',
+		required: true,
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['label'],
+				operation: ["label_lead"],
+			},
+		},
+	},
+	{
+		displayName: 'Lead ID',
+		name: 'lead_id',
+		type: 'string',
+		required: true,
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['label'],
+				operation: ["unlabel_lead"],
+			},
+		},
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['label'],
+				operation: ["create"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Label Type',
+				name: 'label_type',
+				type: 'options',
+				options: [
+					{ name: 'Date', value: 'date' },
+					{ name: 'Decimal', value: 'decimal' },
+					{ name: 'Integer', value: 'integer' },
+					{ name: 'Text', value: 'text' },
+				],
+				default: 'text',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['label'],
+				operation: ["label_customer"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Value Date',
+				name: 'value_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Value Decimal',
+				name: 'value_decimal',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Value Integer',
+				name: 'value_integer',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Value Text',
+				name: 'value_text',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['label'],
+				operation: ["label_member"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Value Date',
+				name: 'value_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Value Decimal',
+				name: 'value_decimal',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Value Integer',
+				name: 'value_integer',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Value Text',
+				name: 'value_text',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['label'],
+				operation: ["label_resource"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Value Date',
+				name: 'value_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Value Decimal',
+				name: 'value_decimal',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Value Integer',
+				name: 'value_integer',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Value Text',
+				name: 'value_text',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['label'],
+				operation: ["label_proposal"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Value Date',
+				name: 'value_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Value Decimal',
+				name: 'value_decimal',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Value Integer',
+				name: 'value_integer',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Value Text',
+				name: 'value_text',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['label'],
+				operation: ["label_work_item"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Value Date',
+				name: 'value_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Value Decimal',
+				name: 'value_decimal',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Value Integer',
+				name: 'value_integer',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Value Text',
+				name: 'value_text',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['label'],
+				operation: ["label_operational_item"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Value Date',
+				name: 'value_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Value Decimal',
+				name: 'value_decimal',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Value Integer',
+				name: 'value_integer',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Value Text',
+				name: 'value_text',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['label'],
+				operation: ["label_document"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Value Date',
+				name: 'value_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Value Decimal',
+				name: 'value_decimal',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Value Integer',
+				name: 'value_integer',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Value Text',
+				name: 'value_text',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['label'],
+				operation: ["label_lead"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Value Date',
+				name: 'value_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Value Decimal',
+				name: 'value_decimal',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Value Integer',
+				name: 'value_integer',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Value Text',
+				name: 'value_text',
+				type: 'string',
+				default: '',
+			},
+		],
 	},
 ];

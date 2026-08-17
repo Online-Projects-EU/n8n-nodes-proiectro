@@ -142,18 +142,6 @@ export const supportRequestFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Root Cause Asset',
-		name: 'root_cause_asset',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['supportRequest'],
-				operation: ["edit"],
-			},
-		},
-	},
-	{
 		displayName: 'Status ID',
 		name: 'status_id',
 		type: 'string',
@@ -231,19 +219,193 @@ export const supportRequestFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Parent Name or ID',
-		name: 'parent_id',
-		type: 'options',
-		typeOptions: {
-			loadOptionsMethod: 'getCustomers',
+		displayName: 'Filters',
+		name: 'filters',
+		type: 'collection',
+		placeholder: 'Add Filter',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['supportRequest'],
+				operation: ["list"],
+			},
 		},
-		default: '',
+		options: [
+			{
+				displayName: 'Assignee ID',
+				name: 'assignee_id',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Customer ID',
+				name: 'customer_id',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Lifecycle Filter',
+				name: 'lifecycle_filter',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Project Name or ID',
+				name: 'project_id',
+				type: 'options',
+				typeOptions: {
+					loadOptionsMethod: 'getProjects',
+				},
+				default: '',
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			},
+			{
+				displayName: 'Queue ID',
+				name: 'queue_id',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Requester ID',
+				name: 'requester_id',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Severity ID',
+				name: 'severity_id',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Status ID',
+				name: 'status_id',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Type ID',
+				name: 'type_id',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['supportRequest'],
+				operation: ["edit"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Root Cause Asset',
+				name: 'root_cause_asset',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
 		displayOptions: {
 			show: {
 				resource: ['supportRequest'],
 				operation: ["add_comment"],
 			},
 		},
-		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+		options: [
+			{
+				displayName: 'Parent Name or ID',
+				name: 'parent_id',
+				type: 'options',
+				typeOptions: {
+					loadOptionsMethod: 'getCustomers',
+				},
+				default: '',
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			},
+		],
+	},
+	{
+		displayName: 'Filters',
+		name: 'filters',
+		type: 'collection',
+		placeholder: 'Add Filter',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['supportRequest'],
+				operation: ["my_assigned"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Created From',
+				name: 'created_from',
+				type: 'string',
+				default: '',
+				description: 'Filter by creation date (from), e.g. \'02 Jan, 2025\'',
+			},
+			{
+				displayName: 'Created To',
+				name: 'created_to',
+				type: 'string',
+				default: '',
+				description: 'Filter by creation date (to), e.g. \'02 Jan, 2025\'',
+			},
+			{
+				displayName: 'Customer',
+				name: 'customer',
+				type: 'string',
+				default: '',
+				description: 'Filter by customer organization',
+			},
+			{
+				displayName: 'Queue',
+				name: 'queue',
+				type: 'string',
+				default: '',
+				description: 'Filter by queue',
+			},
+			{
+				displayName: 'Search',
+				name: 'search',
+				type: 'string',
+				default: '',
+				description: 'Search in title, description, or ticket ID',
+			},
+			{
+				displayName: 'Severity',
+				name: 'severity',
+				type: 'string',
+				default: '',
+				description: 'Filter by severity level',
+			},
+			{
+				displayName: 'Status',
+				name: 'status',
+				type: 'string',
+				default: '',
+				description: 'Filter by status',
+			},
+			{
+				displayName: 'Type',
+				name: 'type',
+				type: 'string',
+				default: '',
+				description: 'Filter by request type',
+			},
+		],
 	},
 ];

@@ -17,12 +17,6 @@ export const tagOperations: INodeProperties[] = [
 				description: 'Create a new tag',
 			},
 			{
-				name: 'Delete',
-				value: 'delete',
-				action: 'Delete a tag',
-				description: 'Delete a tag',
-			},
-			{
 				name: 'List All',
 				value: 'list',
 				action: 'List all tags',
@@ -33,6 +27,18 @@ export const tagOperations: INodeProperties[] = [
 				value: 'tag_customer',
 				action: 'Tag a customer',
 				description: 'Attach a tag to a customer',
+			},
+			{
+				name: 'Tag Document',
+				value: 'tag_document',
+				action: 'Tag a document',
+				description: 'Attach a tag to a document',
+			},
+			{
+				name: 'Tag Lead',
+				value: 'tag_lead',
+				action: 'Tag a lead',
+				description: 'Attach a tag to a lead',
 			},
 			{
 				name: 'Tag Member',
@@ -71,6 +77,18 @@ export const tagOperations: INodeProperties[] = [
 				description: 'Remove a tag from a customer',
 			},
 			{
+				name: 'Untag Document',
+				value: 'untag_document',
+				action: 'Untag a document',
+				description: 'Remove a tag from a document',
+			},
+			{
+				name: 'Untag Lead',
+				value: 'untag_lead',
+				action: 'Untag a lead',
+				description: 'Remove a tag from a lead',
+			},
+			{
 				name: 'Untag Member',
 				value: 'untag_member',
 				action: 'Untag a team member',
@@ -100,12 +118,6 @@ export const tagOperations: INodeProperties[] = [
 				action: 'Untag a work item',
 				description: 'Remove a tag from a project work item',
 			},
-			{
-				name: 'Update',
-				value: 'update',
-				action: 'Update a tag',
-				description: 'Update a tag',
-			},
 		],
 		default: 'create',
 	},
@@ -121,7 +133,7 @@ export const tagFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['tag'],
-				operation: ["create", "update"],
+				operation: ["create"],
 			},
 		},
 	},
@@ -134,26 +146,9 @@ export const tagFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['tag'],
-				operation: ["create", "update"],
+				operation: ["create"],
 			},
 		},
-	},
-	{
-		displayName: 'Tag Name or ID',
-		name: 'tag_id',
-		type: 'options',
-		required: true,
-		typeOptions: {
-			loadOptionsMethod: 'getTags',
-		},
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['tag'],
-				operation: ["update", "delete", "tag_customer", "untag_customer", "tag_member", "untag_member", "tag_resource", "untag_resource", "tag_proposal", "untag_proposal", "tag_work_item", "untag_work_item", "tag_operational_item", "untag_operational_item"],
-			},
-		},
-		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
 		displayName: 'Org Name or ID',
@@ -168,6 +163,23 @@ export const tagFields: INodeProperties[] = [
 			show: {
 				resource: ['tag'],
 				operation: ["tag_customer", "untag_customer"],
+			},
+		},
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+	},
+	{
+		displayName: 'Tag Name or ID',
+		name: 'tag_id',
+		type: 'options',
+		required: true,
+		typeOptions: {
+			loadOptionsMethod: 'getTags',
+		},
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['tag'],
+				operation: ["tag_customer", "untag_customer", "tag_member", "untag_member", "tag_resource", "untag_resource", "tag_proposal", "untag_proposal", "tag_work_item", "untag_work_item", "tag_operational_item", "untag_operational_item", "tag_document", "untag_document", "tag_lead", "untag_lead"],
 			},
 		},
 		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
@@ -229,6 +241,32 @@ export const tagFields: INodeProperties[] = [
 			show: {
 				resource: ['tag'],
 				operation: ["tag_work_item", "untag_work_item", "tag_operational_item", "untag_operational_item"],
+			},
+		},
+	},
+	{
+		displayName: 'Document ID',
+		name: 'document_id',
+		type: 'string',
+		required: true,
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['tag'],
+				operation: ["tag_document", "untag_document"],
+			},
+		},
+	},
+	{
+		displayName: 'Lead ID',
+		name: 'lead_id',
+		type: 'string',
+		required: true,
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['tag'],
+				operation: ["tag_lead", "untag_lead"],
 			},
 		},
 	},

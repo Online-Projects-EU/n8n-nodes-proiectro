@@ -11,18 +11,6 @@ export const processDefinitionOperations: INodeProperties[] = [
 		},
 		options: [
 			{
-				name: 'Create',
-				value: 'create',
-				action: 'Create a process definition',
-				description: 'Create a new process definition',
-			},
-			{
-				name: 'Delete',
-				value: 'delete',
-				action: 'Delete a process definition',
-				description: 'Delete a process definition',
-			},
-			{
 				name: 'Get',
 				value: 'get',
 				action: 'Get a process definition',
@@ -34,14 +22,8 @@ export const processDefinitionOperations: INodeProperties[] = [
 				action: 'List all process definitions',
 				description: 'List all process definitions',
 			},
-			{
-				name: 'Update',
-				value: 'update',
-				action: 'Update a process definition',
-				description: 'Update a process definition',
-			},
 		],
-		default: 'create',
+		default: 'get',
 	},
 ];
 
@@ -58,70 +40,9 @@ export const processDefinitionFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['processDefinition'],
-				operation: ["get", "update", "delete"],
+				operation: ["get"],
 			},
 		},
 		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-	},
-	{
-		displayName: 'Name',
-		name: 'name',
-		type: 'string',
-		required: true,
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['processDefinition'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Description',
-		name: 'description',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['processDefinition'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Allow Backward Move',
-		name: 'allow_backward_move',
-		type: 'boolean',
-		default: false,
-		displayOptions: {
-			show: {
-				resource: ['processDefinition'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Allow Skip Move',
-		name: 'allow_skip_move',
-		type: 'boolean',
-		default: false,
-		displayOptions: {
-			show: {
-				resource: ['processDefinition'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Is Active',
-		name: 'is_active',
-		type: 'boolean',
-		default: false,
-		displayOptions: {
-			show: {
-				resource: ['processDefinition'],
-				operation: ["update"],
-			},
-		},
 	},
 ];

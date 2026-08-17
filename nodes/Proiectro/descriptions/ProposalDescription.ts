@@ -23,6 +23,12 @@ export const proposalOperations: INodeProperties[] = [
 				description: 'Create a new proposal',
 			},
 			{
+				name: 'Delete',
+				value: 'delete',
+				action: 'Delete a proposal',
+				description: 'Delete a proposal',
+			},
+			{
 				name: 'Get',
 				value: 'get',
 				action: 'Get a proposal',
@@ -33,6 +39,18 @@ export const proposalOperations: INodeProperties[] = [
 				value: 'list',
 				action: 'List proposals',
 				description: 'List proposals for an organization',
+			},
+			{
+				name: 'List Active',
+				value: 'list_active',
+				action: 'List active proposals',
+				description: 'List active proposals across the workspace',
+			},
+			{
+				name: 'Log Sales Activity',
+				value: 'log_activity',
+				action: 'Log a sales activity',
+				description: 'Log a sales activity (call, email, meeting) against a customer or project',
 			},
 			{
 				name: 'Reopen',
@@ -81,22 +99,10 @@ export const proposalFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['proposal'],
-				operation: ["get", "update", "change_stage", "reopen"],
+				operation: ["get", "update", "change_stage", "reopen", "delete"],
 			},
 		},
 		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-	},
-	{
-		displayName: 'Internal Code',
-		name: 'internal_code',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["create", "update"],
-			},
-		},
 	},
 	{
 		displayName: 'Name',
@@ -129,18 +135,6 @@ export const proposalFields: INodeProperties[] = [
 		name: 'customer',
 		type: 'string',
 		required: true,
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Rfp Publication',
-		name: 'rfp_publication',
-		type: 'string',
 		default: '',
 		displayOptions: {
 			show: {
@@ -210,192 +204,6 @@ export const proposalFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Pricing Strategy',
-		name: 'pricing_strategy',
-		type: 'options',
-		options: [
-			{ name: 'Fixed Amount', value: 'fixed_amount' },
-			{ name: 'Margin Target', value: 'margin_target' },
-			{ name: 'Percentage', value: 'percentage' },
-			{ name: 'Product Prices', value: 'product_prices' },
-		],
-		default: 'product_prices',
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Pricing Adjustment Percent',
-		name: 'pricing_adjustment_percent',
-		type: 'number',
-		default: 0,
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Pricing Adjustment Amount',
-		name: 'pricing_adjustment_amount',
-		type: 'number',
-		default: 0,
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Target Margin Percent',
-		name: 'target_margin_percent',
-		type: 'number',
-		default: 0,
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Minimum Margin Percent',
-		name: 'minimum_margin_percent',
-		type: 'number',
-		default: 0,
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Proposal Valid Since',
-		name: 'proposal_valid_since',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Proposal Valid Until',
-		name: 'proposal_valid_until',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Project Start Date',
-		name: 'project_start_date',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Project End Date',
-		name: 'project_end_date',
-		type: 'string',
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Project Enable Booking Management',
-		name: 'project_enable_booking_management',
-		type: 'boolean',
-		default: false,
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Project Enable Resource Management',
-		name: 'project_enable_resource_management',
-		type: 'boolean',
-		default: false,
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Project Enable Effort Management',
-		name: 'project_enable_effort_management',
-		type: 'boolean',
-		default: false,
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Project Enable Financial Management',
-		name: 'project_enable_financial_management',
-		type: 'boolean',
-		default: false,
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Project Enable Schedule Management',
-		name: 'project_enable_schedule_management',
-		type: 'boolean',
-		default: false,
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
-		displayName: 'Project Enable Earned Value Management',
-		name: 'project_enable_earned_value_management',
-		type: 'boolean',
-		default: false,
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["create", "update"],
-			},
-		},
-	},
-	{
 		displayName: 'Wbsconfiguration',
 		name: 'wbsconfiguration',
 		type: 'string',
@@ -404,7 +212,7 @@ export const proposalFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['proposal'],
-				operation: ["create", "update"],
+				operation: ["create"],
 			},
 		},
 	},
@@ -422,39 +230,412 @@ export const proposalFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'I Have Followed The Instructions',
-		name: 'i_have_followed_the_instructions',
-		type: 'boolean',
-		default: false,
-		displayOptions: {
-			show: {
-				resource: ['proposal'],
-				operation: ["change_stage"],
-			},
-		},
-	},
-	{
-		displayName: 'Contact ID',
-		name: 'contact_id',
+		displayName: 'Activity Type',
+		name: 'activity_type',
 		type: 'string',
+		required: true,
 		default: '',
 		displayOptions: {
 			show: {
 				resource: ['proposal'],
-				operation: ["change_stage"],
+				operation: ["log_activity"],
 			},
 		},
 	},
 	{
-		displayName: 'Rejection Reason',
-		name: 'rejection_reason',
+		displayName: 'Note',
+		name: 'note',
 		type: 'string',
+		required: true,
 		default: '',
+		displayOptions: {
+			show: {
+				resource: ['proposal'],
+				operation: ["log_activity"],
+			},
+		},
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['proposal'],
+				operation: ["create"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Internal Code',
+				name: 'internal_code',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Minimum Margin Percent',
+				name: 'minimum_margin_percent',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Pricing Adjustment Amount',
+				name: 'pricing_adjustment_amount',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Pricing Adjustment Percent',
+				name: 'pricing_adjustment_percent',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Pricing Strategy',
+				name: 'pricing_strategy',
+				type: 'options',
+				options: [
+					{ name: 'Fixed Amount', value: 'fixed_amount' },
+					{ name: 'Margin Target', value: 'margin_target' },
+					{ name: 'Percentage', value: 'percentage' },
+					{ name: 'Product Prices', value: 'product_prices' },
+				],
+				default: 'product_prices',
+			},
+			{
+				displayName: 'Project Enable Booking Management',
+				name: 'project_enable_booking_management',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Project Enable Earned Value Management',
+				name: 'project_enable_earned_value_management',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Project Enable Effort Management',
+				name: 'project_enable_effort_management',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Project Enable Financial Management',
+				name: 'project_enable_financial_management',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Project Enable Resource Management',
+				name: 'project_enable_resource_management',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Project Enable Schedule Management',
+				name: 'project_enable_schedule_management',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Project End Date',
+				name: 'project_end_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Project Start Date',
+				name: 'project_start_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Proposal Valid Since',
+				name: 'proposal_valid_since',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Proposal Valid Until',
+				name: 'proposal_valid_until',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Rfp Publication',
+				name: 'rfp_publication',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Target Margin Percent',
+				name: 'target_margin_percent',
+				type: 'number',
+				default: 0,
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['proposal'],
+				operation: ["update"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Internal Code',
+				name: 'internal_code',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Minimum Margin Percent',
+				name: 'minimum_margin_percent',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Pricing Adjustment Amount',
+				name: 'pricing_adjustment_amount',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Pricing Adjustment Percent',
+				name: 'pricing_adjustment_percent',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Pricing Strategy',
+				name: 'pricing_strategy',
+				type: 'options',
+				options: [
+					{ name: 'Fixed Amount', value: 'fixed_amount' },
+					{ name: 'Margin Target', value: 'margin_target' },
+					{ name: 'Percentage', value: 'percentage' },
+					{ name: 'Product Prices', value: 'product_prices' },
+				],
+				default: 'product_prices',
+			},
+			{
+				displayName: 'Project Enable Booking Management',
+				name: 'project_enable_booking_management',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Project Enable Earned Value Management',
+				name: 'project_enable_earned_value_management',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Project Enable Effort Management',
+				name: 'project_enable_effort_management',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Project Enable Financial Management',
+				name: 'project_enable_financial_management',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Project Enable Resource Management',
+				name: 'project_enable_resource_management',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Project Enable Schedule Management',
+				name: 'project_enable_schedule_management',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Project End Date',
+				name: 'project_end_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Project Start Date',
+				name: 'project_start_date',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Proposal Valid Since',
+				name: 'proposal_valid_since',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Proposal Valid Until',
+				name: 'proposal_valid_until',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Rfp Publication',
+				name: 'rfp_publication',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Target Margin Percent',
+				name: 'target_margin_percent',
+				type: 'number',
+				default: 0,
+			},
+			{
+				displayName: 'Wbsconfiguration',
+				name: 'wbsconfiguration',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
 		displayOptions: {
 			show: {
 				resource: ['proposal'],
 				operation: ["change_stage"],
 			},
 		},
+		options: [
+			{
+				displayName: 'Contact ID',
+				name: 'contact_id',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'I Have Followed The Instructions',
+				name: 'i_have_followed_the_instructions',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Rejection Reason',
+				name: 'rejection_reason',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Filters',
+		name: 'filters',
+		type: 'collection',
+		placeholder: 'Add Filter',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['proposal'],
+				operation: ["list_active"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Created After',
+				name: 'created_after',
+				type: 'string',
+				default: '',
+				description: 'Filter proposals created after this date (ISO format)',
+			},
+			{
+				displayName: 'Created Before',
+				name: 'created_before',
+				type: 'string',
+				default: '',
+				description: 'Filter proposals created before this date (ISO format)',
+			},
+			{
+				displayName: 'Customer',
+				name: 'customer',
+				type: 'string',
+				default: '',
+				description: 'Filter by customer external ID',
+			},
+			{
+				displayName: 'Name',
+				name: 'name',
+				type: 'string',
+				default: '',
+				description: 'Filter by proposal name',
+			},
+			{
+				displayName: 'Owner Name or ID',
+				name: 'owner',
+				type: 'options',
+				typeOptions: {
+					loadOptionsMethod: 'getMembers',
+				},
+				default: '',
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			},
+			{
+				displayName: 'Sales Stage',
+				name: 'sales_stage',
+				type: 'string',
+				default: '',
+				description: 'Filter by sales stage external ID',
+			},
+			{
+				displayName: 'Search',
+				name: 'search',
+				type: 'string',
+				default: '',
+				description: 'Search by proposal name, description, or customer name',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['proposal'],
+				operation: ["log_activity"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Org',
+				name: 'org',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Project Name or ID',
+				name: 'project',
+				type: 'options',
+				typeOptions: {
+					loadOptionsMethod: 'getProjects',
+				},
+				default: '',
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+			},
+		],
 	},
 ];

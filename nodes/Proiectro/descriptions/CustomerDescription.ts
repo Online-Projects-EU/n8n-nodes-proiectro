@@ -23,6 +23,12 @@ export const customerOperations: INodeProperties[] = [
 				description: 'Delete a customer',
 			},
 			{
+				name: 'Enrich Company',
+				value: 'enrich',
+				action: 'Enrich a company by CUI',
+				description: 'Look up a Romanian company by CUI (name, registration number, VAT status, address)',
+			},
+			{
 				name: 'Get',
 				value: 'get',
 				action: 'Get a customer',
@@ -150,15 +156,99 @@ export const customerFields: INodeProperties[] = [
 		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
-		displayName: 'Domains',
-		name: 'domains',
+		displayName: 'Cui',
+		name: 'cui',
 		type: 'string',
+		required: true,
 		default: '',
 		displayOptions: {
 			show: {
 				resource: ['customer'],
-				operation: ["create", "update"],
+				operation: ["enrich"],
 			},
 		},
+	},
+	{
+		displayName: 'Filters',
+		name: 'filters',
+		type: 'collection',
+		placeholder: 'Add Filter',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['customer'],
+				operation: ["list"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Is Active',
+				name: 'is_active',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'My Orgs',
+				name: 'my_orgs',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Name',
+				name: 'name',
+				type: 'string',
+				default: '',
+				description: 'Filter by organization name',
+			},
+			{
+				displayName: 'Search',
+				name: 'search',
+				type: 'string',
+				default: '',
+				description: 'Search by organization name or path name',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['customer'],
+				operation: ["create"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Domains',
+				name: 'domains',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['customer'],
+				operation: ["update"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Domains',
+				name: 'domains',
+				type: 'string',
+				default: '',
+			},
+		],
 	},
 ];
