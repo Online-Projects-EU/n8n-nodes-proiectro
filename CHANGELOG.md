@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.4.0
+
+24 resources, 199 operations, 148 trigger events (was 24 / 196 / 142).
+
+### New operations
+
+- **Proposal**: **Accept Order**, **Reject Order** (with a reason the customer sees) and
+  **Mark Order Delivered**, for orders your customers place in the customer portal.
+
+### New trigger events
+
+- **Order Placed**, **Order Accepted**, **Order Rejected**, **Order Cancelled**,
+  **Order Receipt Confirmed** and **Quote Requested**, for orders and quote requests from the
+  customer portal.
+
+### Changes
+
+- **Customer**: create and update accept **Portal Ordering Enabled** and
+  **Portal Quote Requests Enabled**.
+- **Proposal**: create and update accept a customer location and asset.
+- **Location** and **Customer Location**: latitude, longitude and accuracy fields.
+- **Lead**: more sources (cold call, email campaign, existing customer, inbound call and email,
+  organic search, paid ads, partner, social media); the default source is now web form.
+
+### Breaking changes
+
+- **Project > Log Work** takes **Duration** (`2`, `1h30m`, `45m` or `3:45`; a bare number is hours)
+  instead of **Hours**.
+
 ## 0.3.0
 
 24 resources, 196 operations, 142 trigger events (was 18 / 115 / 77).

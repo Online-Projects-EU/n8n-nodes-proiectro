@@ -220,17 +220,18 @@ export const projectFields: INodeProperties[] = [
 		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
-		displayName: 'Hours',
-		name: 'hours',
-		type: 'number',
+		displayName: 'Duration',
+		name: 'duration',
+		type: 'string',
 		required: true,
-		default: 0,
+		default: '',
 		displayOptions: {
 			show: {
 				resource: ['project'],
 				operation: ["log_work"],
 			},
 		},
+		description: 'How long the work took: 2, 1h30m, 45m or 3:45. A bare number is hours.',
 	},
 	{
 		displayName: 'Date',

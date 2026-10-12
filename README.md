@@ -35,14 +35,14 @@ You need a Proiect.ro API key to use this node:
 
 ### Proiect.ro (Action Node)
 
-Perform operations on your Proiect.ro data. **24 resources, 196 operations.** List operations expose a *Filters* collection (search, owner, customer, dates, status …); optional fields sit in *Additional Fields* so only what you set is sent.
+Perform operations on your Proiect.ro data. **24 resources, 199 operations.** List operations expose a *Filters* collection (search, owner, customer, dates, status …); optional fields sit in *Additional Fields* so only what you set is sent.
 
 | Resource | Operations |
 |---|---|
 | **Operational Work Item** | List All, Get, Create, Update, Delete, Move, Approve, Reject, Reassign, My Work Items, My Approvals, List Stage Items, History |
 | **Customer** | List All, Get, Create, Update, Delete, Enrich Company |
 | **Contact** | List, Create, Update, Delete, Invite to Portal |
-| **Proposal** | List, Get, Create, Update, Change Stage, Reopen, List Active, Delete, Log Sales Activity |
+| **Proposal** | List, Get, Create, Update, Change Stage, Reopen, List Active, Delete, Log Sales Activity, Accept Order, Reject Order, Mark Order Delivered |
 | **Project** | List All, Get Work Items, List by Customer, Update, Delete, Archive, Unarchive, Mark Delivered, Cancel, Reopen, Log Work |
 | **Work Item** | Create, Update, Change Status, Delete, Get |
 | **Payment** | Create, Update, Mark Paid, Mark Unpaid, Delete |
@@ -66,12 +66,13 @@ Perform operations on your Proiect.ro data. **24 resources, 196 operations.** Li
 
 ### Proiect.ro Trigger
 
-Starts a workflow when an event occurs in Proiect.ro. Uses real-time webhooks — **142 event types** including:
+Starts a workflow when an event occurs in Proiect.ro. Uses real-time webhooks — **148 event types** including:
 
 - Leads: created, status updated, claimed, disqualified, reopened, converted; lead lists created / reassigned
 - Support requests (internal, customer and partner): created, status changed, reassigned, queue transferred, solution accepted / rejected, closed, reopened, comment added
 - Operational Work Items: created, moved, approved, rejected, reassigned
 - Proposals: created, stage changed, accepted, reopened; sales activity logged; payments created / paid / unpaid
+- Customer portal orders: placed, accepted, rejected, cancelled, receipt confirmed; quote requested
 - Projects: updated, delivered, cancelled, reopened, archived; work items created / status changed; work logged
 - Documents generated / finalized; forms submitted; comments added
 - Customers, contacts, locations, assets, resources, bookings, timers, team invitations

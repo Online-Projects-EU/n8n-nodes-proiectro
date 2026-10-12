@@ -93,7 +93,7 @@ export const leadListFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['leadList'],
-				operation: ["update", "delete", "reassign"],
+				operation: ["update", "reassign"],
 			},
 		},
 	},

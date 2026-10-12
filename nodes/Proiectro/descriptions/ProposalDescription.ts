@@ -11,6 +11,12 @@ export const proposalOperations: INodeProperties[] = [
 		},
 		options: [
 			{
+				name: 'Accept Order',
+				value: 'accept_order',
+				action: 'Accept an order',
+				description: 'Accept an order a customer placed in the portal; it becomes a project with its payment scheduled',
+			},
+			{
 				name: 'Change Stage',
 				value: 'change_stage',
 				action: 'Change proposal stage',
@@ -53,6 +59,18 @@ export const proposalOperations: INodeProperties[] = [
 				description: 'Log a sales activity (call, email, meeting) against a customer or project',
 			},
 			{
+				name: 'Mark Order Delivered',
+				value: 'mark_order_delivered',
+				action: 'Mark an order delivered',
+				description: 'Close an accepted order as delivered when the customer has not confirmed receipt',
+			},
+			{
+				name: 'Reject Order',
+				value: 'reject_order',
+				action: 'Reject an order',
+				description: 'Reject an order a customer placed in the portal, with a reason the customer sees',
+			},
+			{
 				name: 'Reopen',
 				value: 'reopen',
 				action: 'Reopen a proposal',
@@ -65,7 +83,7 @@ export const proposalOperations: INodeProperties[] = [
 				description: 'Update an existing proposal',
 			},
 		],
-		default: 'change_stage',
+		default: 'accept_order',
 	},
 ];
 
@@ -99,7 +117,7 @@ export const proposalFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['proposal'],
-				operation: ["get", "update", "change_stage", "reopen", "delete"],
+				operation: ["get", "update", "change_stage", "reopen", "delete", "accept_order", "reject_order", "mark_order_delivered"],
 			},
 		},
 		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
@@ -256,6 +274,32 @@ export const proposalFields: INodeProperties[] = [
 		},
 	},
 	{
+		displayName: 'Confirmation',
+		name: 'confirmation',
+		type: 'boolean',
+		required: true,
+		default: false,
+		displayOptions: {
+			show: {
+				resource: ['proposal'],
+				operation: ["accept_order", "mark_order_delivered"],
+			},
+		},
+	},
+	{
+		displayName: 'Reason',
+		name: 'reason',
+		type: 'string',
+		required: true,
+		default: '',
+		displayOptions: {
+			show: {
+				resource: ['proposal'],
+				operation: ["reject_order"],
+			},
+		},
+	},
+	{
 		displayName: 'Additional Fields',
 		name: 'additionalFields',
 		type: 'collection',
@@ -268,6 +312,18 @@ export const proposalFields: INodeProperties[] = [
 			},
 		},
 		options: [
+			{
+				displayName: 'Customer Asset',
+				name: 'customer_asset',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Customer Location',
+				name: 'customer_location',
+				type: 'string',
+				default: '',
+			},
 			{
 				displayName: 'Internal Code',
 				name: 'internal_code',
@@ -391,6 +447,18 @@ export const proposalFields: INodeProperties[] = [
 			},
 		},
 		options: [
+			{
+				displayName: 'Customer Asset',
+				name: 'customer_asset',
+				type: 'string',
+				default: '',
+			},
+			{
+				displayName: 'Customer Location',
+				name: 'customer_location',
+				type: 'string',
+				default: '',
+			},
 			{
 				displayName: 'Internal Code',
 				name: 'internal_code',

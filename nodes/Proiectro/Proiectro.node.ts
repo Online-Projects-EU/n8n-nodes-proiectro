@@ -575,7 +575,6 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'operationalWorkItem' && operation === 'update') {
 					const item_id = this.getNodeParameter('item_id', i) as string;
 					const body: IDataObject = {};
-					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
 					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
@@ -636,6 +635,7 @@ export class Proiectro implements INodeType {
 					const item_id = this.getNodeParameter('item_id', i) as string;
 					const body: IDataObject = {};
 					body['reason'] = this.getNodeParameter('reason', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1015,6 +1015,51 @@ export class Proiectro implements INodeType {
 						},
 					)) as IDataObject;
 
+				} else if (resource === 'proposal' && operation === 'accept_order') {
+					const proposal_id = this.getNodeParameter('proposal_id', i) as string;
+					const body: IDataObject = {};
+					body['confirmation'] = this.getNodeParameter('confirmation', i) as string | number | boolean;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PATCH',
+							url: `${apiBase}/proposals/${proposal_id}/accept_order`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'proposal' && operation === 'reject_order') {
+					const proposal_id = this.getNodeParameter('proposal_id', i) as string;
+					const body: IDataObject = {};
+					body['reason'] = this.getNodeParameter('reason', i) as string | number | boolean;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PATCH',
+							url: `${apiBase}/proposals/${proposal_id}/reject_order`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'proposal' && operation === 'mark_order_delivered') {
+					const proposal_id = this.getNodeParameter('proposal_id', i) as string;
+					const body: IDataObject = {};
+					body['confirmation'] = this.getNodeParameter('confirmation', i) as string | number | boolean;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'PATCH',
+							url: `${apiBase}/proposals/${proposal_id}/mark_order_delivered`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
 				} else if (resource === 'project' && operation === 'list') {
 					const qs: IDataObject = {};
 					Object.assign(qs, this.getNodeParameter('filters', i, {}) as IDataObject);
@@ -1165,7 +1210,7 @@ export class Proiectro implements INodeType {
 					body['work_item'] = this.getNodeParameter('work_item', i) as string | number | boolean;
 					body['project'] = this.getNodeParameter('project', i) as string | number | boolean;
 					body['member'] = this.getNodeParameter('member', i) as string | number | boolean;
-					body['hours'] = this.getNodeParameter('hours', i) as string | number | boolean;
+					body['duration'] = this.getNodeParameter('duration', i) as string | number | boolean;
 					body['date'] = this.getNodeParameter('date', i) as string | number | boolean;
 					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(

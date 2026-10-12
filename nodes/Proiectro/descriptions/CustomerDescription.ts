@@ -249,6 +249,18 @@ export const customerFields: INodeProperties[] = [
 				type: 'string',
 				default: '',
 			},
+			{
+				displayName: 'Portal Ordering Enabled',
+				name: 'portal_ordering_enabled',
+				type: 'boolean',
+				default: false,
+			},
+			{
+				displayName: 'Portal Quote Requests Enabled',
+				name: 'portal_quote_requests_enabled',
+				type: 'boolean',
+				default: false,
+			},
 		],
 	},
 ];
