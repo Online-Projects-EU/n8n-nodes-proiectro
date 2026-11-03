@@ -9,7 +9,7 @@ import type {
 } from 'n8n-workflow';
 
 const SIGNATURE_HEADER = 'x-webhook-signature';
-const MAX_AGE_SECONDS = 300; // 5 minutes — reject older payloads (replay protection)
+const MAX_AGE_SECONDS = 300; // 5 minutes, reject older payloads (replay protection)
 
 function verifySignature(secret: string, signature: string, rawBody: string): boolean {
 	// Format: t={timestamp},v1={hex_digest}
@@ -110,7 +110,9 @@ export class ProiectroTrigger implements INodeType {
 					{ name: 'External Support Request Solution Rejected', value: 'rejectSolutionExternalSupportRequest' },
 					{ name: 'External Support Request Status Changed', value: 'changeExternalSupportRequestStatus' },
 					{ name: 'External Support Request Updated', value: 'editExternalSupportRequest' },
+					{ name: 'Form Submission Reviewed', value: 'editSubmissionStatus' },
 					{ name: 'Form Submitted', value: 'formSubmitted' },
+					{ name: 'Lead Activity Logged', value: 'logLeadActivity' },
 					{ name: 'Lead Claimed', value: 'claimLead' },
 					{ name: 'Lead Converted', value: 'markLeadConverted' },
 					{ name: 'Lead Created', value: 'addLead' },
@@ -121,6 +123,7 @@ export class ProiectroTrigger implements INodeType {
 					{ name: 'Lead List Reassigned', value: 'reassignLeadList' },
 					{ name: 'Lead List Updated', value: 'editLeadList' },
 					{ name: 'Lead Marked Do Not Contact', value: 'markLeadDoNotContact' },
+					{ name: 'Lead Next Step Rescheduled', value: 'rescheduleLead' },
 					{ name: 'Lead Reopened', value: 'reopenLead' },
 					{ name: 'Lead Status Updated', value: 'updateLeadStatus' },
 					{ name: 'Lead Updated', value: 'editLead' },
@@ -178,6 +181,8 @@ export class ProiectroTrigger implements INodeType {
 					{ name: 'Resource Updated', value: 'editResource' },
 					{ name: 'Sales Activity Deleted', value: 'deleteSalesActivity' },
 					{ name: 'Sales Activity Logged', value: 'addSalesActivity' },
+					{ name: 'Sent Message Not Delivered', value: 'messageDeliveryFailed' },
+					{ name: 'Share Opened', value: 'shareOpened' },
 					{ name: 'Support Request Closed', value: 'closeInternalSupportRequest' },
 					{ name: 'Support Request Closed as No Longer Required', value: 'closeInternalSupportRequestNoLongerRequired' },
 					{ name: 'Support Request Comment Added', value: 'addInternalSupportRequestComment' },
@@ -201,6 +206,9 @@ export class ProiectroTrigger implements INodeType {
 					{ name: 'Team Member Tagged', value: 'tagMember' },
 					{ name: 'Team Member Unlabeled', value: 'unlabelMember' },
 					{ name: 'Team Member Untagged', value: 'untagMember' },
+					{ name: 'Time Off Approved', value: 'approveTimeOff' },
+					{ name: 'Time Off Rejected', value: 'rejectTimeOff' },
+					{ name: 'Time Off Requested', value: 'addMyTimeOff' },
 					{ name: 'Timer Created', value: 'addTimer' },
 					{ name: 'Timer Deleted', value: 'deleteTimer' },
 					{ name: 'Timer Updated', value: 'editTimer' },
@@ -247,7 +255,7 @@ export class ProiectroTrigger implements INodeType {
 						'Content-Type': 'application/json',
 					},
 					body: {
-						name: `n8n: ${this.getWorkflow().name}`,
+						name: `n8n: ${(this.getWorkflow().name ?? '').slice(0, 150)} #${this.getWorkflow().id} ${this.getNode().name}`,
 						target_url: webhookUrl,
 						event_types: eventTypes,
 						is_active: true,

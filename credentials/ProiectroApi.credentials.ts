@@ -19,7 +19,7 @@ export class ProiectroApi implements ICredentialType {
 			typeOptions: { password: true },
 			default: '',
 			required: true,
-			description: 'Your Proiect.ro API key (found in Settings > API Keys)',
+			description: 'Your Proiect.ro API key (found in Personal > My API Keys)',
 		},
 		{
 			displayName: 'Workspace Path',

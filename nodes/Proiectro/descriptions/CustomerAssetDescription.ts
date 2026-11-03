@@ -181,6 +181,12 @@ export const customerAssetFields: INodeProperties[] = [
 				default: false,
 			},
 			{
+				displayName: 'Next Service Date',
+				name: 'next_service_date',
+				type: 'string',
+				default: '',
+			},
+			{
 				displayName: 'Parent',
 				name: 'parent',
 				type: 'string',
@@ -264,6 +270,12 @@ export const customerAssetFields: INodeProperties[] = [
 				name: 'is_customer_visible',
 				type: 'boolean',
 				default: false,
+			},
+			{
+				displayName: 'Next Service Date',
+				name: 'next_service_date',
+				type: 'string',
+				default: '',
 			},
 			{
 				displayName: 'Parent',

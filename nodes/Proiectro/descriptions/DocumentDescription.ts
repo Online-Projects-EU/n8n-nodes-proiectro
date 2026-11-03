@@ -205,19 +205,6 @@ export const documentFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Series ID',
-		name: 'series_id',
-		type: 'string',
-		required: true,
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['document'],
-				operation: ["finalize"],
-			},
-		},
-	},
-	{
 		displayName: 'Filters',
 		name: 'filters',
 		type: 'collection',
@@ -569,6 +556,27 @@ export const documentFields: INodeProperties[] = [
 			{
 				displayName: 'Title',
 				name: 'title',
+				type: 'string',
+				default: '',
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['document'],
+				operation: ["finalize"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Series ID',
+				name: 'series_id',
 				type: 'string',
 				default: '',
 			},

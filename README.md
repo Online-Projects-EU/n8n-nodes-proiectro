@@ -24,7 +24,7 @@ npm install n8n-nodes-proiectro
 You need a Proiect.ro API key to use this node:
 
 1. Log in to your [Proiect.ro](https://proiect.ro) workspace
-2. Go to **Settings > API Keys**
+2. Go to **Personal > My API Keys** in the sidebar
 3. Create a new API key
 4. In n8n, create a new **Proiect.ro API** credential with:
    - **API Key** — the key you just created

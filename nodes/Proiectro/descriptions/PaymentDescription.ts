@@ -188,6 +188,12 @@ export const paymentFields: INodeProperties[] = [
 				default: '',
 			},
 			{
+				displayName: 'Invoiced Date',
+				name: 'invoiced_date',
+				type: 'string',
+				default: '',
+			},
+			{
 				displayName: 'Name',
 				name: 'name',
 				type: 'string',

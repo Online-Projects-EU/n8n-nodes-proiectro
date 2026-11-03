@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.5.0
+
+25 resources, 204 operations, 156 trigger events (was 24 / 199 / 148).
+
+### New resource
+
+- **Time Off**: **Ask**, **List Requests**, **Approve**, **Reject** (with a reason the member sees) and
+  **Delete**.
+
+### New trigger events
+
+- **Time Off Requested**, **Time Off Approved**, **Time Off Rejected**.
+- **Lead Activity Logged**, **Lead Next Step Rescheduled**, **Share Opened**, **Sent Message Not
+  Delivered** and **Form Submission Reviewed**.
+
+### Changes
+
+- **Document > Finalize**: **Series** is optional.
+- **Customer Asset**: **Next Service Date**. **Payment**: **Invoiced Date**.
+- Lists of comments no longer return attachments.
+- The API key is created under **Personal > My API Keys**.
+
 ## 0.4.0
 
 24 resources, 199 operations, 148 trigger events (was 24 / 196 / 142).

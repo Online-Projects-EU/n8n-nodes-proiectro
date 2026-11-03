@@ -99,6 +99,10 @@ import {
 	teamMemberOperations,
 } from './descriptions/TeamMemberDescription';
 import {
+	timeOffFields,
+	timeOffOperations,
+} from './descriptions/TimeOffDescription';
+import {
 	timerFields,
 	timerOperations,
 } from './descriptions/TimerDescription';
@@ -248,6 +252,11 @@ export class Proiectro implements INodeType {
 						description: 'Manage team members in the workspace',
 					},
 					{
+						name: 'Time Off',
+						value: 'timeOff',
+						description: 'Time off members ask for and approvers decide',
+					},
+					{
 						name: 'Timer',
 						value: 'timer',
 						description: 'Scheduled timers that fire automation events',
@@ -304,6 +313,8 @@ export class Proiectro implements INodeType {
 			...tagFields,
 			...teamMemberOperations,
 			...teamMemberFields,
+			...timeOffOperations,
+			...timeOffFields,
 			...timerOperations,
 			...timerFields,
 			...workItemOperations,
@@ -2960,7 +2971,7 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'document' && operation === 'finalize') {
 					const document_id = this.getNodeParameter('document_id', i) as string;
 					const body: IDataObject = {};
-					body['series_id'] = this.getNodeParameter('series_id', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -3048,6 +3059,75 @@ export class Proiectro implements INodeType {
 						{
 							method: 'DELETE',
 							url: `${apiBase}/timer/${timer_id}`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'timeOff' && operation === 'list') {
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'GET',
+							url: `${apiBase}/time_off_requests`,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'timeOff' && operation === 'create') {
+					const body: IDataObject = {};
+					body['exception_type'] = this.getNodeParameter('exception_type', i) as string | number | boolean;
+					body['start_date'] = this.getNodeParameter('start_date', i) as string | number | boolean;
+					body['end_date'] = this.getNodeParameter('end_date', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/my_time_off`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'timeOff' && operation === 'approve') {
+					const time_off_id = this.getNodeParameter('time_off_id', i) as string;
+					const body: IDataObject = {};
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/time_off/${time_off_id}/approve`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'timeOff' && operation === 'reject') {
+					const time_off_id = this.getNodeParameter('time_off_id', i) as string;
+					const body: IDataObject = {};
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'POST',
+							url: `${apiBase}/time_off/${time_off_id}/reject`,
+							body,
+							json: true,
+						},
+					)) as IDataObject;
+
+				} else if (resource === 'timeOff' && operation === 'delete') {
+					const time_off_id = this.getNodeParameter('time_off_id', i) as string;
+					responseData = (await this.helpers.httpRequestWithAuthentication.call(
+						this,
+						'proiectroApi',
+						{
+							method: 'DELETE',
+							url: `${apiBase}/my_time_off/${time_off_id}`,
 							json: true,
 						},
 					)) as IDataObject;
