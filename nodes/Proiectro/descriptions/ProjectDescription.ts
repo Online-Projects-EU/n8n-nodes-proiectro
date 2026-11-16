@@ -534,6 +534,27 @@ export const projectFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['project'],
+				operation: ["mark_delivered"],
+			},
+		},
+		options: [
+			{
+				displayName: 'Send Email',
+				name: 'send_email',
+				type: 'boolean',
+				default: false,
+			},
+		],
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'additionalFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: {
+			show: {
+				resource: ['project'],
 				operation: ["log_work"],
 			},
 		},

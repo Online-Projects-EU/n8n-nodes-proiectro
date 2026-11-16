@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.0
+
+25 resources, 204 operations, 156 trigger events.
+
+### Changes
+
+- **Send Email** on **Project > Mark Delivered**, and on **Proposal > Accept Order**, **Reject Order** and
+  **Mark Order Delivered**: also email the customer.
+- **Lead > Update**: **Status** is no longer set by editing; use the lead's status operations.
+  **Lead > Create** no longer offers **Converted**.
+
 ## 0.5.0
 
 25 resources, 204 operations, 156 trigger events (was 24 / 199 / 148).

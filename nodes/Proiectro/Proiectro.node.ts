@@ -1030,6 +1030,7 @@ export class Proiectro implements INodeType {
 					const proposal_id = this.getNodeParameter('proposal_id', i) as string;
 					const body: IDataObject = {};
 					body['confirmation'] = this.getNodeParameter('confirmation', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1045,6 +1046,7 @@ export class Proiectro implements INodeType {
 					const proposal_id = this.getNodeParameter('proposal_id', i) as string;
 					const body: IDataObject = {};
 					body['reason'] = this.getNodeParameter('reason', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1060,6 +1062,7 @@ export class Proiectro implements INodeType {
 					const proposal_id = this.getNodeParameter('proposal_id', i) as string;
 					const body: IDataObject = {};
 					body['confirmation'] = this.getNodeParameter('confirmation', i) as string | number | boolean;
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
@@ -1176,6 +1179,7 @@ export class Proiectro implements INodeType {
 				} else if (resource === 'project' && operation === 'mark_delivered') {
 					const project_id = this.getNodeParameter('project_id', i) as string;
 					const body: IDataObject = {};
+					Object.assign(body, this.getNodeParameter('additionalFields', i, {}) as IDataObject);
 					responseData = (await this.helpers.httpRequestWithAuthentication.call(
 						this,
 						'proiectroApi',
