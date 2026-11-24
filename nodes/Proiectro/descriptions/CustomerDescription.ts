@@ -70,23 +70,6 @@ export const customerFields: INodeProperties[] = [
 		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 	},
 	{
-		displayName: 'Parent Name or ID',
-		name: 'parent_id',
-		type: 'options',
-		required: true,
-		typeOptions: {
-			loadOptionsMethod: 'getCustomers',
-		},
-		default: '',
-		displayOptions: {
-			show: {
-				resource: ['customer'],
-				operation: ["create"],
-			},
-		},
-		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
-	},
-	{
 		displayName: 'Name',
 		name: 'name',
 		type: 'string',

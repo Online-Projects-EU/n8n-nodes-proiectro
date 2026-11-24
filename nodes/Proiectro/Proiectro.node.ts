@@ -747,7 +747,6 @@ export class Proiectro implements INodeType {
 
 				} else if (resource === 'customer' && operation === 'create') {
 					const body: IDataObject = {};
-					body['parent_id'] = this.getNodeParameter('parent_id', i) as string | number | boolean;
 					body['name'] = this.getNodeParameter('name', i) as string | number | boolean;
 					body['timezone'] = this.getNodeParameter('timezone', i) as string | number | boolean;
 					body['default_currency'] = this.getNodeParameter('default_currency', i) as string | number | boolean;

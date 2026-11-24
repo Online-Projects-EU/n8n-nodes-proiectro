@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.7.0
+
+25 resources, 204 operations, 156 trigger events.
+
+### Changes
+
+- **Customer > Create** no longer asks for **Parent**: a customer is created in the workspace of the
+  credential.
+
 ## 0.6.0
 
 25 resources, 204 operations, 156 trigger events.
